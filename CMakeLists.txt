@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.25)
-project(DspHeterodyne VERSION 0.1.0 LANGUAGES CXX HIP)
+project(DspHeterodyne VERSION 0.1.0
+  DESCRIPTION "LFM Dechirp, NCO, MixDown/MixUp"
+  LANGUAGES CXX HIP)
 
 # ── Опции ──────────────────────────────────────────────────────────
 option(DSP_HETERODYNE_BUILD_TESTS  "Build tests"            ON)
