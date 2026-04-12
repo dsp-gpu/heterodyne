@@ -19,7 +19,8 @@ add_library(DspHeterodyne STATIC)
 add_library(DspHeterodyne::DspHeterodyne ALIAS DspHeterodyne)
 
 target_sources(DspHeterodyne PRIVATE
-  # Phase 1 skeleton — sources added in Phase 2
+  src/heterodyne/src/heterodyne_dechirp.cpp
+  src/heterodyne/src/heterodyne_processor_rocm.cpp
 )
 
 target_include_directories(DspHeterodyne
@@ -27,6 +28,7 @@ target_include_directories(DspHeterodyne
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
   PRIVATE
+    src/heterodyne/include
     kernels/
     src
 )
