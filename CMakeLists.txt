@@ -28,6 +28,7 @@ target_sources(DspHeterodyne PRIVATE
 target_include_directories(DspHeterodyne
   PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/generated>
     $<INSTALL_INTERFACE:include>
   PRIVATE
     src/heterodyne/include
@@ -39,12 +40,36 @@ target_link_libraries(DspHeterodyne
 )
 target_compile_features(DspHeterodyne PUBLIC cxx_std_17)
 
+# ── Git Version ────────────────────────────────────────────────────
+find_package(Git QUIET)
+if(NOT GIT_EXECUTABLE)
+    set(GIT_EXECUTABLE git)
+endif()
+
+add_custom_target(git_version_DspHeterodyne ALL
+    COMMAND ${CMAKE_COMMAND}
+        -D SRC_DIR=${CMAKE_CURRENT_SOURCE_DIR}
+        -D BIN_DIR=${CMAKE_CURRENT_BINARY_DIR}
+        -D GIT_EXECUTABLE=${GIT_EXECUTABLE}
+        -D MODULE_PREFIX=DSPHETERODYNE
+        -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/version.cmake
+    COMMENT "[DspHeterodyne] Checking git version..."
+    VERBATIM
+)
+add_dependencies(DspHeterodyne git_version_DspHeterodyne)
+
 # ── Install + Export ────────────────────────────────────────────────
 include(GNUInstallDirs)
 install(TARGETS DspHeterodyne EXPORT DspHeterodyneTargets
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
 )
 install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/generated/version.h"
+  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/DspHeterodyne
+)
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/generated/version.json"
+  DESTINATION ${CMAKE_INSTALL_DATADIR}/DspHeterodyne
+)
 
 include(CMakePackageConfigHelpers)
 configure_package_config_file(cmake/DspHeterodyneConfig.cmake.in
