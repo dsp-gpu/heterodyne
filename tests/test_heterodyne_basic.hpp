@@ -18,12 +18,12 @@
  * @date 2026-02-21 (migrated 2026-03-23)
  */
 
-#include "heterodyne_dechirp.hpp"
+#include <heterodyne/heterodyne_dechirp.hpp>
 #include "heterodyne_params.hpp"
 
 #if ENABLE_ROCM
 
-#include "backends/rocm/rocm_backend.hpp"
+#include <core/backends/rocm/rocm_backend.hpp>
 
 #include "modules/test_utils/test_utils.hpp"
 

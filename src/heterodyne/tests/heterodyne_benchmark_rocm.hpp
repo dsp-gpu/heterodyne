@@ -25,7 +25,7 @@
 
 #if ENABLE_ROCM
 
-#include "processors/heterodyne_processor_rocm.hpp"
+#include <heterodyne/processors/heterodyne_processor_rocm.hpp>
 #include "DrvGPU/services/gpu_benchmark_base.hpp"
 
 #include <hip/hip_runtime.h>

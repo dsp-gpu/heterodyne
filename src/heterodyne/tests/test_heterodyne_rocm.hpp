@@ -25,10 +25,10 @@
 #include <random>
 
 #if ENABLE_ROCM
-#include "processors/heterodyne_processor_rocm.hpp"
+#include <heterodyne/processors/heterodyne_processor_rocm.hpp>
 #include "heterodyne_dechirp.hpp"
 #include "heterodyne_params.hpp"
-#include "backends/rocm/rocm_backend.hpp"
+#include <core/backends/rocm/rocm_backend.hpp>
 
 #include "modules/test_utils/test_utils.hpp"
 

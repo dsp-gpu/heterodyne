@@ -27,11 +27,11 @@ target_sources(DspHeterodyne PRIVATE
 
 target_include_directories(DspHeterodyne
   PUBLIC
+    # Стандарт AMD: #include <heterodyne/processors/...>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/generated>
     $<INSTALL_INTERFACE:include>
   PRIVATE
-    src/heterodyne/include
     kernels/
     src
 )
@@ -39,6 +39,10 @@ target_link_libraries(DspHeterodyne
   PUBLIC DspCore::DspCore DspSpectrum::DspSpectrum DspSignalGenerators::DspSignalGenerators
 )
 target_compile_features(DspHeterodyne PUBLIC cxx_std_17)
+
+if(ENABLE_ROCM)
+  target_compile_definitions(DspHeterodyne PUBLIC ENABLE_ROCM=1)
+endif()
 
 # ── Git Version ────────────────────────────────────────────────────
 find_package(Git QUIET)

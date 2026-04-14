@@ -20,7 +20,7 @@
  * @date 2026-02-24
  */
 
-#include "processors/heterodyne_processor_rocm.hpp"
+#include <heterodyne/processors/heterodyne_processor_rocm.hpp>
 #include "heterodyne_params.hpp"
 
 // ============================================================================

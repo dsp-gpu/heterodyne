@@ -23,7 +23,7 @@
 
 #if ENABLE_ROCM
 
-#include "backends/rocm/rocm_backend.hpp"
+#include <core/backends/rocm/rocm_backend.hpp>
 
 #include "modules/test_utils/test_utils.hpp"
 

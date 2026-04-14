@@ -15,13 +15,13 @@
  * @date 2026-02-21
  */
 
-#include "heterodyne_dechirp.hpp"
-#include "processors/heterodyne_processor_rocm.hpp"
+#include <heterodyne/heterodyne_dechirp.hpp>
+#include <heterodyne/processors/heterodyne_processor_rocm.hpp>
 
 // Spectrum peak finding: FFT + OnePeak (parabolic interpolation) on GPU
 #include <stdexcept>
 #if ENABLE_ROCM
-#include "factory/spectrum_processor_factory.hpp"
+#include <spectrum/factory/spectrum_processor_factory.hpp>
 #endif
 
 #include <cmath>

@@ -28,10 +28,10 @@
 
 #include "i_heterodyne_processor.hpp"
 #include "heterodyne_params.hpp"
-#include "common/backend_type.hpp"
-#include "generators/lfm_conjugate_generator_rocm.hpp"
-#include "params/signal_request.hpp"
-#include "params/system_sampling.hpp"
+#include <core/common/backend_type.hpp>
+#include <signal_generators/generators/lfm_conjugate_generator_rocm.hpp>
+#include <signal_generators/params/signal_request.hpp>
+#include <signal_generators/params/system_sampling.hpp>
 #include <memory>
 
 namespace drv_gpu_lib {

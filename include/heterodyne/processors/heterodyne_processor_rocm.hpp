@@ -25,9 +25,9 @@
 #if ENABLE_ROCM
 
 #include "../i_heterodyne_processor.hpp"
-#include "interface/i_backend.hpp"
-#include "interface/gpu_context.hpp"
-#include "services/profiling_types.hpp"
+#include <core/interface/i_backend.hpp>
+#include <core/interface/gpu_context.hpp>
+#include <core/services/profiling_types.hpp>
 
 #include <hip/hip_runtime.h>
 #include <utility>
@@ -140,7 +140,7 @@ private:
 // ═══════════════════════════════════════════════════════════════════════════
 
 #include "../i_heterodyne_processor.hpp"
-#include "interface/i_backend.hpp"
+#include <core/interface/i_backend.hpp>
 #include <stdexcept>
 
 namespace drv_gpu_lib {
