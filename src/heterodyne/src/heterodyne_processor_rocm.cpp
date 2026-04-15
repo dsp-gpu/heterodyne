@@ -43,6 +43,8 @@
 #define M_PI 3.14159265358979323846
 #endif
 
+#include <core/services/scoped_hip_event.hpp>
+
 using fft_func_utils::MakeROCmDataFromEvents;
 
 namespace drv_gpu_lib {
@@ -213,30 +215,30 @@ std::vector<std::complex<float>> HeterodyneProcessorROCm::Dechirp(
   hipError_t err;
 
   // Upload rx
-  hipEvent_t ev_rx_s = nullptr, ev_rx_e = nullptr;
+  ScopedHipEvent ev_rx_s, ev_rx_e;
   if (prof_events) {
-    hipEventCreate(&ev_rx_s); hipEventCreate(&ev_rx_e);
-    hipEventRecord(ev_rx_s, ctx_.stream());
+    ev_rx_s.Create(); ev_rx_e.Create();
+    hipEventRecord(ev_rx_s.get(), ctx_.stream());
   }
   err = hipMemcpyHtoDAsync(buf_rx_, const_cast<std::complex<float>*>(rx_data.data()),
                             rx_bytes, ctx_.stream());
   if (err != hipSuccess)
     throw std::runtime_error("Dechirp: rx upload failed: " +
         std::string(hipGetErrorString(err)));
-  if (prof_events) hipEventRecord(ev_rx_e, ctx_.stream());
+  if (prof_events) hipEventRecord(ev_rx_e.get(), ctx_.stream());
 
   // Upload ref
-  hipEvent_t ev_ref_s = nullptr, ev_ref_e = nullptr;
+  ScopedHipEvent ev_ref_s, ev_ref_e;
   if (prof_events) {
-    hipEventCreate(&ev_ref_s); hipEventCreate(&ev_ref_e);
-    hipEventRecord(ev_ref_s, ctx_.stream());
+    ev_ref_s.Create(); ev_ref_e.Create();
+    hipEventRecord(ev_ref_s.get(), ctx_.stream());
   }
   err = hipMemcpyHtoDAsync(buf_ref_, const_cast<std::complex<float>*>(ref_data.data()),
                             ref_bytes, ctx_.stream());
   if (err != hipSuccess)
     throw std::runtime_error("Dechirp: ref upload failed: " +
         std::string(hipGetErrorString(err)));
-  if (prof_events) hipEventRecord(ev_ref_e, ctx_.stream());
+  if (prof_events) hipEventRecord(ev_ref_e.get(), ctx_.stream());
 
   // OPT-1: Use cached kernel, OPT-5: 2D grid (x=sample, y=antenna)
   int n_pts = params.num_samples;
@@ -247,10 +249,10 @@ std::vector<std::complex<float>> HeterodyneProcessorROCm::Dechirp(
   unsigned int grid_x = (static_cast<unsigned int>(n_pts) + kBlockSize - 1) / kBlockSize;
   unsigned int grid_y = static_cast<unsigned int>(n_ant);
 
-  hipEvent_t ev_k_s = nullptr, ev_k_e = nullptr;
+  ScopedHipEvent ev_k_s, ev_k_e;
   if (prof_events) {
-    hipEventCreate(&ev_k_s); hipEventCreate(&ev_k_e);
-    hipEventRecord(ev_k_s, ctx_.stream());
+    ev_k_s.Create(); ev_k_e.Create();
+    hipEventRecord(ev_k_s.get(), ctx_.stream());
   }
   err = hipModuleLaunchKernel(
       ctx_.GetKernel("dechirp_multiply"),
@@ -261,32 +263,32 @@ std::vector<std::complex<float>> HeterodyneProcessorROCm::Dechirp(
   if (err != hipSuccess)
     throw std::runtime_error("Dechirp: kernel launch failed: " +
         std::string(hipGetErrorString(err)));
-  if (prof_events) hipEventRecord(ev_k_e, ctx_.stream());
+  if (prof_events) hipEventRecord(ev_k_e.get(), ctx_.stream());
 
   // Download result
   std::vector<std::complex<float>> result(total);
-  hipEvent_t ev_dl_s = nullptr, ev_dl_e = nullptr;
+  ScopedHipEvent ev_dl_s, ev_dl_e;
   if (prof_events) {
-    hipEventCreate(&ev_dl_s); hipEventCreate(&ev_dl_e);
-    hipEventRecord(ev_dl_s, ctx_.stream());
+    ev_dl_s.Create(); ev_dl_e.Create();
+    hipEventRecord(ev_dl_s.get(), ctx_.stream());
   }
   err = hipMemcpyDtoHAsync(result.data(), buf_dc_, rx_bytes, ctx_.stream());
   if (err != hipSuccess)
     throw std::runtime_error("Dechirp: read failed: " +
         std::string(hipGetErrorString(err)));
-  if (prof_events) hipEventRecord(ev_dl_e, ctx_.stream());
+  if (prof_events) hipEventRecord(ev_dl_e.get(), ctx_.stream());
 
   hipStreamSynchronize(ctx_.stream());
 
   if (prof_events) {
     prof_events->push_back({"Upload_Rx",
-        MakeROCmDataFromEvents(ev_rx_s,  ev_rx_e,  1, "H2D")});
+        MakeROCmDataFromEvents(ev_rx_s.get(), ev_rx_e.get(),  1, "H2D")});
     prof_events->push_back({"Upload_Ref",
-        MakeROCmDataFromEvents(ev_ref_s, ev_ref_e, 1, "H2D")});
+        MakeROCmDataFromEvents(ev_ref_s.get(), ev_ref_e.get(), 1, "H2D")});
     prof_events->push_back({"Kernel_Multiply",
-        MakeROCmDataFromEvents(ev_k_s,   ev_k_e,   0, "dechirp_multiply")});
+        MakeROCmDataFromEvents(ev_k_s.get(), ev_k_e.get(),   0, "dechirp_multiply")});
     prof_events->push_back({"Download",
-        MakeROCmDataFromEvents(ev_dl_s,  ev_dl_e,  1, "D2H")});
+        MakeROCmDataFromEvents(ev_dl_s.get(), ev_dl_e.get(),  1, "D2H")});
   }
 
   return result;
@@ -318,17 +320,17 @@ std::vector<std::complex<float>> HeterodyneProcessorROCm::Correct(
   hipError_t err;
 
   // Upload DC data
-  hipEvent_t ev_dc_s = nullptr, ev_dc_e = nullptr;
+  ScopedHipEvent ev_dc_s, ev_dc_e;
   if (prof_events) {
-    hipEventCreate(&ev_dc_s); hipEventCreate(&ev_dc_e);
-    hipEventRecord(ev_dc_s, ctx_.stream());
+    ev_dc_s.Create(); ev_dc_e.Create();
+    hipEventRecord(ev_dc_s.get(), ctx_.stream());
   }
   err = hipMemcpyHtoDAsync(buf_dc_, const_cast<std::complex<float>*>(dc_data.data()),
                             data_bytes, ctx_.stream());
   if (err != hipSuccess)
     throw std::runtime_error("Correct: dc upload failed: " +
         std::string(hipGetErrorString(err)));
-  if (prof_events) hipEventRecord(ev_dc_e, ctx_.stream());
+  if (prof_events) hipEventRecord(ev_dc_e.get(), ctx_.stream());
 
   // OPT-6: Precompute phase_step on CPU: phase_step[ant] = -2*pi*f_beat/fs
   std::vector<float> phase_step(params.num_antennas);
@@ -337,16 +339,16 @@ std::vector<std::complex<float>> HeterodyneProcessorROCm::Correct(
   }
 
   size_t freq_bytes = static_cast<size_t>(params.num_antennas) * sizeof(float);
-  hipEvent_t ev_ps_s = nullptr, ev_ps_e = nullptr;
+  ScopedHipEvent ev_ps_s, ev_ps_e;
   if (prof_events) {
-    hipEventCreate(&ev_ps_s); hipEventCreate(&ev_ps_e);
-    hipEventRecord(ev_ps_s, ctx_.stream());
+    ev_ps_s.Create(); ev_ps_e.Create();
+    hipEventRecord(ev_ps_s.get(), ctx_.stream());
   }
   err = hipMemcpyHtoDAsync(buf_freq_, phase_step.data(), freq_bytes, ctx_.stream());
   if (err != hipSuccess)
     throw std::runtime_error("Correct: phase_step upload failed: " +
         std::string(hipGetErrorString(err)));
-  if (prof_events) hipEventRecord(ev_ps_e, ctx_.stream());
+  if (prof_events) hipEventRecord(ev_ps_e.get(), ctx_.stream());
 
   // OPT-1: Use cached kernel, OPT-5: 2D grid (x=sample, y=antenna)
   int n_pts = params.num_samples;
@@ -357,10 +359,10 @@ std::vector<std::complex<float>> HeterodyneProcessorROCm::Correct(
   unsigned int grid_x = (static_cast<unsigned int>(n_pts) + kBlockSize - 1) / kBlockSize;
   unsigned int grid_y = static_cast<unsigned int>(n_ant);
 
-  hipEvent_t ev_k_s = nullptr, ev_k_e = nullptr;
+  ScopedHipEvent ev_k_s, ev_k_e;
   if (prof_events) {
-    hipEventCreate(&ev_k_s); hipEventCreate(&ev_k_e);
-    hipEventRecord(ev_k_s, ctx_.stream());
+    ev_k_s.Create(); ev_k_e.Create();
+    hipEventRecord(ev_k_s.get(), ctx_.stream());
   }
   err = hipModuleLaunchKernel(
       ctx_.GetKernel("dechirp_correct"),
@@ -371,31 +373,31 @@ std::vector<std::complex<float>> HeterodyneProcessorROCm::Correct(
   if (err != hipSuccess)
     throw std::runtime_error("Correct: kernel launch failed: " +
         std::string(hipGetErrorString(err)));
-  if (prof_events) hipEventRecord(ev_k_e, ctx_.stream());
+  if (prof_events) hipEventRecord(ev_k_e.get(), ctx_.stream());
 
   std::vector<std::complex<float>> result(total);
-  hipEvent_t ev_dl_s = nullptr, ev_dl_e = nullptr;
+  ScopedHipEvent ev_dl_s, ev_dl_e;
   if (prof_events) {
-    hipEventCreate(&ev_dl_s); hipEventCreate(&ev_dl_e);
-    hipEventRecord(ev_dl_s, ctx_.stream());
+    ev_dl_s.Create(); ev_dl_e.Create();
+    hipEventRecord(ev_dl_s.get(), ctx_.stream());
   }
   err = hipMemcpyDtoHAsync(result.data(), buf_corr_, data_bytes, ctx_.stream());
   if (err != hipSuccess)
     throw std::runtime_error("Correct: read failed: " +
         std::string(hipGetErrorString(err)));
-  if (prof_events) hipEventRecord(ev_dl_e, ctx_.stream());
+  if (prof_events) hipEventRecord(ev_dl_e.get(), ctx_.stream());
 
   hipStreamSynchronize(ctx_.stream());
 
   if (prof_events) {
     prof_events->push_back({"Upload_DC",
-        MakeROCmDataFromEvents(ev_dc_s, ev_dc_e, 1, "H2D")});
+        MakeROCmDataFromEvents(ev_dc_s.get(), ev_dc_e.get(), 1, "H2D")});
     prof_events->push_back({"Upload_PhaseStep",
-        MakeROCmDataFromEvents(ev_ps_s, ev_ps_e, 1, "H2D")});
+        MakeROCmDataFromEvents(ev_ps_s.get(), ev_ps_e.get(), 1, "H2D")});
     prof_events->push_back({"Kernel_Correct",
-        MakeROCmDataFromEvents(ev_k_s,  ev_k_e,  0, "dechirp_correct")});
+        MakeROCmDataFromEvents(ev_k_s.get(), ev_k_e.get(),  0, "dechirp_correct")});
     prof_events->push_back({"Download",
-        MakeROCmDataFromEvents(ev_dl_s, ev_dl_e, 1, "D2H")});
+        MakeROCmDataFromEvents(ev_dl_s.get(), ev_dl_e.get(), 1, "D2H")});
   }
 
   return result;
@@ -430,17 +432,17 @@ std::vector<std::complex<float>> HeterodyneProcessorROCm::DechirpFromGPU(
   hipError_t err;
 
   // Upload ref to cached buffer
-  hipEvent_t ev_ref_s = nullptr, ev_ref_e = nullptr;
+  ScopedHipEvent ev_ref_s, ev_ref_e;
   if (prof_events) {
-    hipEventCreate(&ev_ref_s); hipEventCreate(&ev_ref_e);
-    hipEventRecord(ev_ref_s, ctx_.stream());
+    ev_ref_s.Create(); ev_ref_e.Create();
+    hipEventRecord(ev_ref_s.get(), ctx_.stream());
   }
   err = hipMemcpyHtoDAsync(buf_ref_, const_cast<std::complex<float>*>(ref_data.data()),
                             ref_bytes, ctx_.stream());
   if (err != hipSuccess)
     throw std::runtime_error("DechirpFromGPU: ref upload failed: " +
         std::string(hipGetErrorString(err)));
-  if (prof_events) hipEventRecord(ev_ref_e, ctx_.stream());
+  if (prof_events) hipEventRecord(ev_ref_e.get(), ctx_.stream());
 
   int n_pts = params.num_samples;
   int n_ant = params.num_antennas;
@@ -451,10 +453,10 @@ std::vector<std::complex<float>> HeterodyneProcessorROCm::DechirpFromGPU(
   unsigned int grid_x = (static_cast<unsigned int>(n_pts) + kBlockSize - 1) / kBlockSize;
   unsigned int grid_y = static_cast<unsigned int>(n_ant);
 
-  hipEvent_t ev_k_s = nullptr, ev_k_e = nullptr;
+  ScopedHipEvent ev_k_s, ev_k_e;
   if (prof_events) {
-    hipEventCreate(&ev_k_s); hipEventCreate(&ev_k_e);
-    hipEventRecord(ev_k_s, ctx_.stream());
+    ev_k_s.Create(); ev_k_e.Create();
+    hipEventRecord(ev_k_s.get(), ctx_.stream());
   }
   err = hipModuleLaunchKernel(
       ctx_.GetKernel("dechirp_multiply"),
@@ -465,29 +467,29 @@ std::vector<std::complex<float>> HeterodyneProcessorROCm::DechirpFromGPU(
   if (err != hipSuccess)
     throw std::runtime_error("DechirpFromGPU: kernel launch failed: " +
         std::string(hipGetErrorString(err)));
-  if (prof_events) hipEventRecord(ev_k_e, ctx_.stream());
+  if (prof_events) hipEventRecord(ev_k_e.get(), ctx_.stream());
 
   std::vector<std::complex<float>> result(total);
-  hipEvent_t ev_dl_s = nullptr, ev_dl_e = nullptr;
+  ScopedHipEvent ev_dl_s, ev_dl_e;
   if (prof_events) {
-    hipEventCreate(&ev_dl_s); hipEventCreate(&ev_dl_e);
-    hipEventRecord(ev_dl_s, ctx_.stream());
+    ev_dl_s.Create(); ev_dl_e.Create();
+    hipEventRecord(ev_dl_s.get(), ctx_.stream());
   }
   err = hipMemcpyDtoHAsync(result.data(), buf_dc_, rx_bytes, ctx_.stream());
   if (err != hipSuccess)
     throw std::runtime_error("DechirpFromGPU: read failed: " +
         std::string(hipGetErrorString(err)));
-  if (prof_events) hipEventRecord(ev_dl_e, ctx_.stream());
+  if (prof_events) hipEventRecord(ev_dl_e.get(), ctx_.stream());
 
   hipStreamSynchronize(ctx_.stream());
 
   if (prof_events) {
     prof_events->push_back({"Upload_Ref",
-        MakeROCmDataFromEvents(ev_ref_s, ev_ref_e, 1, "H2D")});
+        MakeROCmDataFromEvents(ev_ref_s.get(), ev_ref_e.get(), 1, "H2D")});
     prof_events->push_back({"Kernel_Multiply",
-        MakeROCmDataFromEvents(ev_k_s,   ev_k_e,   0, "dechirp_multiply")});
+        MakeROCmDataFromEvents(ev_k_s.get(), ev_k_e.get(),   0, "dechirp_multiply")});
     prof_events->push_back({"Download",
-        MakeROCmDataFromEvents(ev_dl_s,  ev_dl_e,  1, "D2H")});
+        MakeROCmDataFromEvents(ev_dl_s.get(), ev_dl_e.get(),  1, "D2H")});
   }
 
   return result;
@@ -520,10 +522,10 @@ std::vector<std::complex<float>> HeterodyneProcessorROCm::DechirpWithGPURef(
   unsigned int grid_x = (static_cast<unsigned int>(n_pts) + kBlockSize - 1) / kBlockSize;
   unsigned int grid_y = static_cast<unsigned int>(n_ant);
 
-  hipEvent_t ev_k_s = nullptr, ev_k_e = nullptr;
+  ScopedHipEvent ev_k_s, ev_k_e;
   if (prof_events) {
-    hipEventCreate(&ev_k_s); hipEventCreate(&ev_k_e);
-    hipEventRecord(ev_k_s, ctx_.stream());
+    ev_k_s.Create(); ev_k_e.Create();
+    hipEventRecord(ev_k_s.get(), ctx_.stream());
   }
   hipError_t err = hipModuleLaunchKernel(
       ctx_.GetKernel("dechirp_multiply"),
@@ -534,27 +536,27 @@ std::vector<std::complex<float>> HeterodyneProcessorROCm::DechirpWithGPURef(
   if (err != hipSuccess)
     throw std::runtime_error("DechirpWithGPURef: kernel launch failed: " +
         std::string(hipGetErrorString(err)));
-  if (prof_events) hipEventRecord(ev_k_e, ctx_.stream());
+  if (prof_events) hipEventRecord(ev_k_e.get(), ctx_.stream());
 
   std::vector<std::complex<float>> result(total);
-  hipEvent_t ev_dl_s = nullptr, ev_dl_e = nullptr;
+  ScopedHipEvent ev_dl_s, ev_dl_e;
   if (prof_events) {
-    hipEventCreate(&ev_dl_s); hipEventCreate(&ev_dl_e);
-    hipEventRecord(ev_dl_s, ctx_.stream());
+    ev_dl_s.Create(); ev_dl_e.Create();
+    hipEventRecord(ev_dl_s.get(), ctx_.stream());
   }
   err = hipMemcpyDtoHAsync(result.data(), buf_dc_, rx_bytes, ctx_.stream());
   if (err != hipSuccess)
     throw std::runtime_error("DechirpWithGPURef: read failed: " +
         std::string(hipGetErrorString(err)));
-  if (prof_events) hipEventRecord(ev_dl_e, ctx_.stream());
+  if (prof_events) hipEventRecord(ev_dl_e.get(), ctx_.stream());
 
   hipStreamSynchronize(ctx_.stream());
 
   if (prof_events) {
     prof_events->push_back({"Kernel_Multiply",
-        MakeROCmDataFromEvents(ev_k_s,  ev_k_e,  0, "dechirp_multiply")});
+        MakeROCmDataFromEvents(ev_k_s.get(), ev_k_e.get(),  0, "dechirp_multiply")});
     prof_events->push_back({"Download",
-        MakeROCmDataFromEvents(ev_dl_s, ev_dl_e, 1, "D2H")});
+        MakeROCmDataFromEvents(ev_dl_s.get(), ev_dl_e.get(), 1, "D2H")});
   }
 
   return result;
