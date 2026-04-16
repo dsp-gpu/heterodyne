@@ -26,11 +26,11 @@
 
 #if ENABLE_ROCM
 #include <heterodyne/processors/heterodyne_processor_rocm.hpp>
-#include "heterodyne_dechirp.hpp"
-#include "heterodyne_params.hpp"
+#include <heterodyne/heterodyne_dechirp.hpp>
+#include <heterodyne/heterodyne_params.hpp>
 #include <core/backends/rocm/rocm_backend.hpp>
 
-#include "modules/test_utils/test_utils.hpp"
+#include "test_utils/test_utils.hpp"
 
 #include <hip/hip_runtime.h>
 #endif

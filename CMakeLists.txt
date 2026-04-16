@@ -20,6 +20,9 @@ fetch_dsp_signal_generators()
 add_library(DspHeterodyne STATIC)
 add_library(DspHeterodyne::DspHeterodyne ALIAS DspHeterodyne)
 
+# PIC нужен для Python bindings (.so линкует static lib)
+set_target_properties(DspHeterodyne PROPERTIES POSITION_INDEPENDENT_CODE ON)
+
 target_sources(DspHeterodyne PRIVATE
   src/heterodyne/src/heterodyne_dechirp.cpp
   src/heterodyne/src/heterodyne_processor_rocm.cpp

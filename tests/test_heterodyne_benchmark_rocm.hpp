@@ -22,8 +22,8 @@
 #if ENABLE_ROCM
 
 #include "heterodyne_benchmark_rocm.hpp"
-#include "DrvGPU/backends/rocm/rocm_backend.hpp"
-#include "DrvGPU/backends/rocm/rocm_core.hpp"
+#include <core/backends/rocm/rocm_backend.hpp>
+#include <core/backends/rocm/rocm_core.hpp>
 
 #include <complex>
 #include <iostream>

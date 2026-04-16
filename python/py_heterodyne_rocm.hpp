@@ -21,7 +21,7 @@
  */
 
 #include <heterodyne/processors/heterodyne_processor_rocm.hpp>
-#include "heterodyne_params.hpp"
+#include <heterodyne/heterodyne_params.hpp>
 
 // ============================================================================
 // PyHeterodyneROCm — LFM heterodyne processor (ROCm)

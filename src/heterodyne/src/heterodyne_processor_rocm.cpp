@@ -30,7 +30,7 @@
 
 #include <heterodyne/processors/heterodyne_processor_rocm.hpp>
 #include <heterodyne/kernels/heterodyne_kernels_rocm.hpp>
-#include "rocm_profiling_helpers.hpp"
+#include <spectrum/utils/rocm_profiling_helpers.hpp>
 #include <core/services/console_output.hpp>
 
 #include <stdexcept>

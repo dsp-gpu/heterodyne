@@ -11,7 +11,7 @@
  */
 
 #include "heterodyne_dechirp.hpp"
-#include "heterodyne_params.hpp"
+#include <heterodyne/heterodyne_params.hpp>
 
 // ============================================================================
 // PyHeterodyneDechirp — LFM dechirp pipeline wrapper
