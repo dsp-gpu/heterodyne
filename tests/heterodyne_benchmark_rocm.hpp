@@ -27,6 +27,7 @@
 
 #include <heterodyne/processors/heterodyne_processor_rocm.hpp>
 #include <core/services/gpu_benchmark_base.hpp>
+#include <core/services/profiling/profiling_facade.hpp>
 
 #include <hip/hip_runtime.h>
 #include <complex>
@@ -57,12 +58,12 @@ protected:
     proc_.Dechirp(rx_data_, ref_data_, params_);
   }
 
-  /// Замер — Dechirp с HeterodyneROCmProfEvents → RecordROCmEvent → GPUProfiler
+  /// Замер — Dechirp с HeterodyneROCmProfEvents → ProfilingFacade::BatchRecord
   void ExecuteKernelTimed() override {
     drv_gpu_lib::HeterodyneROCmProfEvents events;
     proc_.Dechirp(rx_data_, ref_data_, params_, &events);
-    for (auto& [name, data] : events)
-      RecordROCmEvent(name, data);
+    drv_gpu_lib::profiling::ProfilingFacade::GetInstance()
+        .BatchRecord(gpu_id_, "heterodyne/dechirp", events);
   }
 
 private:
@@ -95,12 +96,12 @@ protected:
     proc_.Correct(dc_data_, f_beat_hz_, params_);
   }
 
-  /// Замер — Correct с HeterodyneROCmProfEvents → RecordROCmEvent → GPUProfiler
+  /// Замер — Correct с HeterodyneROCmProfEvents → ProfilingFacade::BatchRecord
   void ExecuteKernelTimed() override {
     drv_gpu_lib::HeterodyneROCmProfEvents events;
     proc_.Correct(dc_data_, f_beat_hz_, params_, &events);
-    for (auto& [name, data] : events)
-      RecordROCmEvent(name, data);
+    drv_gpu_lib::profiling::ProfilingFacade::GetInstance()
+        .BatchRecord(gpu_id_, "heterodyne/correct", events);
   }
 
 private:
