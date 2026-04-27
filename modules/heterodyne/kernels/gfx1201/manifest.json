@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "kernels": [
+    {
+      "name": "Heterodyne_kernels",
+      "comment": "Heterodyne hiprtc kernels",
+      "created": "2026-04-20T18:55:56",
+      "params": "",
+      "backend": "rocm"
+    }
+  ]
+}
