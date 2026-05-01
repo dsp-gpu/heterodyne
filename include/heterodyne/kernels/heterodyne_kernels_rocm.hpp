@@ -1,26 +1,28 @@
 #pragma once
 
 /**
- * @file heterodyne_kernels_rocm.hpp
- * @brief HIP kernel sources for heterodyne dechirp processing
+ * @brief HIP kernel-source для heterodyne dechirp (multiply + correct).
  *
- * Contains (single compilation unit):
- * - dechirp_multiply: s_dc = conj(s_rx * s_ref) on GPU
- * - dechirp_correct:  frequency correction exp(j * phase_step * n)
+ * @note Тип B (technical header): R"HIP(...)HIP" source для hiprtc.
+ *       Один compilation unit содержит два ядра:
+ *         - dechirp_multiply: dc = conj(rx * ref), даёт ПОЛОЖИТЕЛЬНУЮ
+ *           f_beat = +μ·τ (умножение на conj(s_tx) с последующим conj
+ *           эквивалентно conj(rx)·s_tx).
+ *         - dechirp_correct:  output = input · exp(j·phase_step·n) —
+ *           сдвиг тонала к 0 Гц (DC) для последующей фильтрации.
+ * @note Layout: [num_antennas × num_samples] flat, channel-sequential.
+ *       Grid: ((num_samples+255)/256, num_antennas), Block: 256.
+ * @note Оптимизации (порт из OpenCL → HIP):
+ *         OPT-5:  2D grid (x=sample, y=antenna) — нет div/mod внутри ядра.
+ *         OPT-6:  phase_step[ant] = -2π·f_beat[ant]/fs предсчитан на CPU.
+ *         OPT-7:  __launch_bounds__(256) — optimal RDNA register allocation.
+ *         OPT-8:  aligned(8) float2_t — 64-bit load/store вместо двух 32-bit.
+ *         OPT-9:  sincosf — один SFU-проход вместо cosf+sinf.
+ *         OPT-10: Один hiprtc unit на оба ядра — экономия compile-time.
  *
- * Port of dechirp_multiply.cl and dechirp_correct.cl (OpenCL -> HIP).
- * Embedded as raw strings for hiprtc runtime compilation.
- *
- * Optimizations:
- *   OPT-5:  2D grid (x=sample, y=antenna) — eliminates div/mod
- *   OPT-6:  phase_step precomputed on CPU (no division in kernel)
- *   OPT-7:  __launch_bounds__(256) for optimal register allocation
- *   OPT-8:  aligned(8) float2_t for 64-bit load/store
- *   OPT-9:  sincosf for single SFU pass (cos+sin in one call)
- *   OPT-10: Single hiprtc compilation unit (both kernels)
- *
- * @author Kodo (AI Assistant)
- * @date 2026-02-23
+ * История:
+ *   - Создан:  2026-02-23 (порт dechirp_multiply.cl + dechirp_correct.cl на HIP)
+ *   - Изменён: 2026-05-01 (унификация формата шапки под dsp-asst RAG-индексер)
  */
 
 #if ENABLE_ROCM

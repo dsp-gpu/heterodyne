@@ -1,11 +1,18 @@
 #pragma once
 
 /**
- * @file heterodyne_params.hpp
- * @brief Parameters and result types for LFM dechirp processing
+ * @brief Параметры и результаты LFM dechirp (POD-структуры).
  *
- * @author Kodo (AI Assistant)
- * @date 2026-02-21
+ * @note Тип B (technical header): POD-структуры без логики (только небольшие
+ *       геометрические геттеры — bandwidth, duration, chirp rate, bin width).
+ *       Валидация (num_samples > 0, sample_rate > 0, f_end > f_start) — в
+ *       HeterodyneDechirp::SetParams() / IHeterodyneProcessor реализациях.
+ * @note CalcRange() использует c = 3e8 м/с (вакуумная скорость света).
+ *       Для радиолокации в воздухе погрешность ≈ 0.03% — не критична.
+ *
+ * История:
+ *   - Создан:  2026-02-21
+ *   - Изменён: 2026-05-01 (унификация формата шапки под dsp-asst RAG-индексер)
  */
 
 #include <cstdint>

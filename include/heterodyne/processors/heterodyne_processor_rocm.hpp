@@ -1,26 +1,53 @@
 #pragma once
 
-/**
- * @file heterodyne_processor_rocm.hpp
- * @brief ROCm/HIP implementation of heterodyne dechirp processor
- *
- * Port of HeterodyneProcessorOpenCL with HIP equivalents:
- * - hiprtc for kernel compilation (dechirp_multiply, dechirp_correct)
- * - void* device pointers instead of cl_mem
- * - hipStream_t instead of cl_command_queue
- *
- * Optimizations preserved from OpenCL version:
- *   OPT-1: Kernel objects cached (compiled once)
- *   OPT-2: GPU buffers cached and reused across calls
- *   OPT-3: DechirpWithGPURef() — both inputs on GPU
- *   OPT-5: 1D kernel launch (gid = ant*N + n)
- *   OPT-6: phase_step precomputed on CPU
- *
- * Compiles ONLY with ENABLE_ROCM=1 (Linux + AMD GPU).
- *
- * @author Kodo (AI Assistant)
- * @date 2026-02-23
- */
+// ============================================================================
+// HeterodyneProcessorROCm — ROCm/HIP реализация IHeterodyneProcessor
+//
+// ЧТО:    Реализация IHeterodyneProcessor: запускает HIP-ядра
+//         dechirp_multiply (s_dc = conj(s_rx · s_ref)) и dechirp_correct
+//         (сдвиг f_beat → DC) через hiprtc-скомпилированный модуль.
+//         Управляет кэшем GPU-буферов (rx, ref, dc, corr, freq) с
+//         re-allocation только при изменении размеров. Используется
+//         HeterodyneDechirp как Strategy для ROCm backend'а.
+//
+// ЗАЧЕМ:  Production-путь dechirp на AMD GPU (RDNA4+ / CDNA). Изолирует
+//         HIP-зависимости от публичного API: фасад HeterodyneDechirp
+//         работает через IHeterodyneProcessor*, не зная о hipModule_t /
+//         hipStream_t. На non-ROCm сборках (Windows) — stub с throw,
+//         чтобы код собирался для линковки и Python-биндингов.
+//
+// ПОЧЕМУ: - Layer 6 Ref03 (Facade-of-Ops): держит GpuContext (kernel
+//           compile/cache) и кэш GPU-буферов; фактическая логика — в
+//           ядрах (heterodyne_kernels_rocm.hpp).
+//         - OPT-1: kernel'ы компилируются ОДИН раз (compiled_ флаг через
+//           EnsureCompiled). hiprtc-компиляция дорогая (~50 мс).
+//         - OPT-2: GPU-буферы кэшируются (cached_total_, cached_samples_,
+//           cached_antennas_). Re-allocation только при изменении размеров —
+//           иначе hipMalloc/hipFree на каждый вызов = 100+ мкс overhead.
+//         - OPT-3: DechirpWithGPURef — оба входа уже на GPU (нет PCIe для
+//           ref). Используется когда reference-сигнал уже сгенерирован
+//           на GPU (LfmConjugateGenerator → конвейер без CPU roundtrip).
+//         - Move разрешён, copy запрещён (=delete) — owns hipModule +
+//           buffers; копирование = chaos с GPU lifetime.
+//         - kBlockSize = 256: оптимум для warp=64 на RDNA4 (4 wavefront
+//           per block, full SIMD utilization). Меньше → idle threads,
+//           больше → register spill.
+//         - prof_events перегрузки методов — production-путь без overhead'а
+//           сборки событий (nullptr), benchmark-путь — с явным prof_events*.
+//         - GpuContext (Ref03 Layer 1) — единая точка для kernel
+//           compile/cache; backend_ хранится отдельно для hipMalloc через
+//           IBackend::AllocateDevice().
+//
+// Использование:
+//   IBackend* backend = drv.GetBackend();
+//   HeterodyneProcessorROCm proc(backend);
+//   auto dc = proc.Dechirp(rx_data, ref_data, params);
+//   auto cr = proc.Correct(dc, f_beat_hz, params);
+//
+// История:
+//   - Создан:  2026-02-23 (порт HeterodyneProcessorOpenCL → HIP/ROCm)
+//   - Изменён: 2026-05-01 (унификация формата шапки под dsp-asst RAG-индексер)
+// ============================================================================
 
 #if ENABLE_ROCM
 
@@ -35,9 +62,23 @@
 
 namespace drv_gpu_lib {
 
+/// ROCm profiling events: (name, ROCmProfilingData) pairs collected during processing.
 using HeterodyneROCmProfEvents =
     std::vector<std::pair<const char*, drv_gpu_lib::ROCmProfilingData>>;
 
+/**
+ * @class HeterodyneProcessorROCm
+ * @brief ROCm/HIP реализация IHeterodyneProcessor: dechirp_multiply + dechirp_correct.
+ *
+ * @note Move разрешён, copy запрещён — owns hipModule + GPU-буферы.
+ * @note Требует #if ENABLE_ROCM. На non-ROCm сборках — stub с runtime_error.
+ * @note Не thread-safe. Один экземпляр = один владелец GPU-кэша и hipModule.
+ * @note OPT-1/2: kernel'ы скомпилированы один раз, GPU-буферы кэшируются
+ *       по размерам (cached_total_, cached_samples_, cached_antennas_).
+ * @see IHeterodyneProcessor — интерфейс (Strategy).
+ * @see GetHeterodyneKernelSource_rocm() — kernel source для hiprtc.
+ * @see HeterodyneDechirp — Layer 6 фасад, держит unique_ptr на этот класс.
+ */
 class HeterodyneProcessorROCm : public IHeterodyneProcessor {
 public:
   explicit HeterodyneProcessorROCm(IBackend* backend);

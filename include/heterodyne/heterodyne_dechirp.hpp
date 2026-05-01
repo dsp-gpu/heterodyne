@@ -1,30 +1,54 @@
 #pragma once
 
-/**
- * @file heterodyne_dechirp.hpp
- * @brief Heterodyne dechirp LFM - public facade API
- *
- * USAGE (normal mode):
- *   auto& backend = drv.GetBackend();
- *   HeterodyneDechirp het(backend);
- *   het.SetParams(params);
- *   auto result = het.Process(rx_matrix);  // num_antennas * num_samples
- *
- * USAGE (external GPU buffer):
- *   het.SetParams(params);
- *   auto result = het.ProcessExternal(gpu_ptr, params);  // cl_mem or hipDeviceptr_t
- *
- * PIPELINE:
- *   1. LfmConjugateGenerator -> s_ref* (GPU)
- *   2. dechirp_multiply.cl   -> s_dc = s_rx * s_ref*  (GPU)
- *   3. FFTProcessor           -> FFT spectrum           (GPU)
- *   4. SpectrumMaximaFinder  -> f_beat (peak)           (GPU)
- *   5. dechirp_correct.cl    -> frequency compensation  (GPU)
- *   6. Verification: spectrum -> DC                      (GPU)
- *
- * @author Kodo (AI Assistant)
- * @date 2026-02-21
- */
+// ============================================================================
+// HeterodyneDechirp — публичный фасад LFM dechirp pipeline (Layer 6 Ref03)
+//
+// ЧТO:    Главный публичный API модуля heterodyne. Координирует полный
+//         pipeline LFM-дешифровки: генерация conj(LFM) → dechirp multiply
+//         → FFT → поиск пика (f_beat) → частотная коррекция → проверка.
+//         По f_beat вычисляет дальность R = c·T·f_beat / (2·B). Держит
+//         IHeterodyneProcessor (Strategy: ROCm/OpenCL) и кэшированный
+//         LfmConjugateGeneratorROCm (OPT-4).
+//
+// ЗАЧЕМ:  Это публичный API модуля — Python-биндинги (dsp_heterodyne)
+//         работают через HeterodyneDechirp::Process / ProcessExternal.
+//         Один класс координирует все стадии (Controller GRASP), не
+//         делая kernel-launch'и сам — делегирует Strategy. ProcessExternal
+//         — для интеграции с внешними OpenCL/ROCm-программами (входной
+//         буфер уже на GPU, без PCIe-копирования).
+//
+// ПОЧЕМУ: - Layer 6 Ref03 (Facade): тонкий координатор, не содержит kernel-
+//           логики. Все вычисления — в IHeterodyneProcessor реализациях.
+//         - Move/copy запрещены (=delete) — owns Strategy + кэшированный
+//           генератор + last_result; копирование = chaos с GPU lifetime.
+//         - OPT-4: LfmConjugateGenerator кэшируется (params_dirty_ флаг).
+//           Пересоздаётся ТОЛЬКО при SetParams — иначе при каждом Process
+//           генерация conj(LFM) занимала бы ~1 мс.
+//         - BackendType compute_backend (default ROCm): Strategy выбирается
+//           в конструкторе. OpenCL-путь оставлен для legacy-интеграций
+//           (ROCm-only — общий принцип, но heterodyne исторически имел
+//           OpenCL implementation для совместимости).
+//         - ProcessExternal принимает void* — это либо cl_mem, либо
+//           hipDeviceptr_t, Strategy-реализация интерпретирует.
+//           Внешняя программа владеет указателем — фасад НЕ освобождает.
+//         - last_result_ кэшируется (GetLastResult) — для повторного
+//           чтения без re-Process (Python tests / debugging).
+//
+// Использование:
+//   auto& backend = drv.GetBackend();
+//   HeterodyneDechirp het(&backend);
+//   HeterodyneParams params{.f_start=0, .f_end=1e6f, .sample_rate=12e6f,
+//                            .num_samples=4000, .num_antennas=5};
+//   het.SetParams(params);
+//   auto result = het.Process(rx_matrix);  // [num_antennas * num_samples]
+//   for (auto& a : result.antennas) {
+//     std::cout << "ant=" << a.antenna_idx << " R=" << a.range_m << " m\n";
+//   }
+//
+// История:
+//   - Создан:  2026-02-21 (LFM dechirp facade: ROCm + OpenCL Strategy)
+//   - Изменён: 2026-05-01 (унификация формата шапки под dsp-asst RAG-индексер)
+// ============================================================================
 
 #include "i_heterodyne_processor.hpp"
 #include "heterodyne_params.hpp"
@@ -38,7 +62,19 @@ namespace drv_gpu_lib {
 
 class IBackend;
 
-/// @ingroup grp_heterodyne
+/**
+ * @class HeterodyneDechirp
+ * @brief Layer 6 Ref03 фасад LFM-дешифровки: dechirp → FFT → peak → range.
+ *
+ * @note Move/copy запрещены — owns Strategy + cached LFM generator + last_result.
+ * @note Lifecycle: ctor(backend, backend_type) → SetParams(params) → Process*.
+ * @note OPT-4: conj(LFM) генератор кэшируется, пересоздаётся только в SetParams.
+ * @note Не thread-safe. Один экземпляр = один владелец Strategy + GPU-кэша.
+ * @see IHeterodyneProcessor — Strategy (ROCm-реализация).
+ * @see HeterodyneParams — параметры LFM (f_start, f_end, sample_rate, ...).
+ * @see HeterodyneResult — per-antenna результаты (f_beat, range, SNR).
+ * @ingroup grp_heterodyne
+ */
 class HeterodyneDechirp {
 public:
   /**
