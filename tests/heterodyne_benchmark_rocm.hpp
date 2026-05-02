@@ -1,5 +1,18 @@
 #pragma once
 
+// ============================================================================
+// heterodyne_benchmark_rocm — benchmark-классы HeterodyneProcessorROCm
+//
+// ЧТО:    HeterodyneDechirpBenchmarkROCm (Dechirp) и
+//         HeterodyneCorrectBenchmarkROCm (Correct) — наследники GpuBenchmarkBase.
+//         Замеряют этапы: Upload_Rx, Upload_Ref, Kernel_Multiply, Download.
+// ЗАЧЕМ:  Позволяет изолированно измерить производительность Dechirp/Correct
+//         на реальном GPU без overhead тестовой инфраструктуры.
+// ПОЧЕМУ: Компилируется только при ENABLE_ROCM=1. Результаты → ProfilingFacade.
+//
+// История: Создан: 2026-04-12
+// ============================================================================
+
 /**
  * @file heterodyne_benchmark_rocm.hpp
  * @brief ROCm benchmark-классы для HeterodyneProcessorROCm (GpuBenchmarkBase)

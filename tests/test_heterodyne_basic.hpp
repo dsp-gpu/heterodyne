@@ -1,5 +1,18 @@
 #pragma once
 
+// ============================================================================
+// test_heterodyne_basic — базовые тесты HeterodyneDechirp facade (ROCm)
+//
+// ЧТО:    3 теста: single_antenna (delay=100us → f_beat=300kHz),
+//         five_antennas_linear (delays [100..500] us), random_delays (seed=42).
+//         fs=12MHz, B=2MHz, N=8000, mu=3e9 Hz/s. Допуск ±5 kHz.
+// ЗАЧЕМ:  Sanity-тест facade HeterodyneDechirp — это точка входа всех
+//         дечирп-операций. Ошибки дают неверные дальности в radar.
+// ПОЧЕМУ: ENABLE_ROCM. Эталон — аналитический (f_beat = 2·tau·B/T).
+//
+// История: Создан: 2026-04-12
+// ============================================================================
+
 /**
  * @file test_heterodyne_basic.hpp
  * @brief Basic heterodyne dechirp tests — facade HeterodyneDechirp (ROCm)

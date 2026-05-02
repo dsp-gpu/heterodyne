@@ -1,5 +1,17 @@
 #pragma once
 
+// ============================================================================
+// test_heterodyne_rocm — тесты HeterodyneProcessorROCm (ROCm)
+//
+// ЧТО:    6 тестов: single_antenna, five_antennas, correction (dechirp→DC peak),
+//         full_pipeline, dechirp_from_gpu (external HIP buffer), random_delays.
+// ЗАЧЕМ:  Покрывает низкоуровневый ROCm-класс — изолирует GPU kernel
+//         от бизнес-логики facade. Падение здесь = ошибка в HIP kernel.
+// ПОЧЕМУ: ENABLE_ROCM. Эталон — GPU vs CPU. External buffer тест.
+//
+// История: Создан: 2026-04-12
+// ============================================================================
+
 /**
  * @file test_heterodyne_rocm.hpp
  * @brief ROCm tests for HeterodyneProcessorROCm

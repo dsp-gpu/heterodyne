@@ -1,5 +1,18 @@
 #pragma once
 
+// ============================================================================
+// test_heterodyne_benchmark_rocm — бенчмарк HeterodyneProcessorROCm (ROCm)
+//
+// ЧТО:    Запускает 2 бенчмарка: Dechirp() и Correct()
+//         → Results/Profiler/GPU_00_Heterodyne_ROCm/.
+//         5 прогревочных + 20 замерных прогонов.
+// ЗАЧЕМ:  Измеряет производительность гетеродинирования на GPU.
+//         Ключевая операция в radar pipeline (LFM dechirp).
+// ПОЧЕМУ: Нет AMD GPU → [SKIP]. Результаты через ProfilingFacade.
+//
+// История: Создан: 2026-04-12
+// ============================================================================
+
 /**
  * @file test_heterodyne_benchmark_rocm.hpp
  * @brief Test runner: HeterodyneProcessorROCm — ROCm benchmark (GpuBenchmarkBase)

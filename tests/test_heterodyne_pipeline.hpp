@@ -1,5 +1,17 @@
 #pragma once
 
+// ============================================================================
+// test_heterodyne_pipeline — интеграционные тесты HeterodyneDechirp facade
+//
+// ЧТО:    2 теста: full_pipeline (Process() 5 антенн, range validation),
+//         process_external (ProcessExternal() с внешним HIP-буфером).
+// ЗАЧЕМ:  Тестирует facade-уровень — как используется в radar pipeline.
+//         Ошибки statefulness/ownership HIP-буферов невидимы без этих тестов.
+// ПОЧЕМУ: ENABLE_ROCM. External-buffer тест проверяет owns_resources_=false.
+//
+// История: Создан: 2026-04-12
+// ============================================================================
+
 /**
  * @file test_heterodyne_pipeline.hpp
  * @brief Integration tests for HeterodyneDechirp facade (ROCm)
