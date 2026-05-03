@@ -70,7 +70,9 @@ public:
    * @param rx_data   Матрица [num_antennas × num_samples] complex float (flat).
    * @param ref_data  Вектор [num_samples] complex float = conj(s_tx).
    * @param params    Параметры LFM.
+   *   @test_ref HeterodyneParams
    * @return          Dechirp-матрица [num_antennas × num_samples] complex float.
+   *   @test_check result.size() == params.num_antennas * params.num_samples
    */
   virtual std::vector<std::complex<float>> Dechirp(
       const std::vector<std::complex<float>>& rx_data,
@@ -82,7 +84,9 @@ public:
    * @param dc_data    Dechirp-данные [num_antennas × num_samples].
    * @param f_beat_hz  Beat-частоты по антеннам [num_antennas], Гц.
    * @param params     Параметры LFM.
+   *   @test_ref HeterodyneParams
    * @return           Скорректированные данные [num_antennas × num_samples].
+   *   @test_check result.size() == params.num_antennas * params.num_samples
    */
   virtual std::vector<std::complex<float>> Correct(
       const std::vector<std::complex<float>>& dc_data,
@@ -96,9 +100,12 @@ public:
    * уже на GPU (cl_mem или hipDeviceptr_t), процессор НЕ освобождает его.
    *
    * @param rx_cl_mem  Внешний GPU-буфер [num_antennas × num_samples].
+   *   @test { pattern=gpu_pointer, values=["valid_alloc", nullptr] }
    * @param ref_data   Reference (CPU → GPU внутри метода).
    * @param params     Параметры LFM.
+   *   @test_ref HeterodyneParams
    * @return           Dechirp-данные на CPU.
+   *   @test_check result.size() == params.num_antennas * params.num_samples
    */
   virtual std::vector<std::complex<float>> DechirpFromGPU(
       void* rx_cl_mem,
@@ -109,6 +116,9 @@ public:
    * @brief OPT-3: Dechirp с rx и ref уже на GPU (без PCIe для ref).
    * @note Default-реализация бросает runtime_error — поддержка опциональна.
    * @throws std::runtime_error если backend не поддерживает GPU-ref.
+   * @return Dechirp-данные на CPU [num_antennas × num_samples] complex float.
+   *   @test_check result.size() == params.num_antennas * params.num_samples
+   *   @test_check throws std::runtime_error в default-реализации
    */
   virtual std::vector<std::complex<float>> DechirpWithGPURef(
       void* /*rx_cl_mem*/, void* /*ref_cl_mem*/,

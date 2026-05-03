@@ -92,23 +92,33 @@ public:
   void SetParams(const HeterodyneParams& params);
 
   /**
-   * Full pipeline from CPU data.
-   * Input: s_rx flat matrix [num_antennas * num_samples], complex float
+   * @brief Полный pipeline LFM dechirp из CPU-данных: H2D → conj(LFM) ref → mul → FFT → peak → range.
+   * @details Pipeline (4 этапа):
+   *   1. Generate conj(LFM) reference (OPT-4: cached).
+   *   2. Dechirp multiply: s_dc = s_rx * conj(s_tx) (OPT-3: GPU ref).
+   *   3. FFT → find peak → f_beat.
+   *   4. Calculate range + SNR.
    *
-   * Pipeline:
-   *   1. Generate conj(LFM) reference (OPT-4: cached)
-   *   2. Dechirp multiply: s_dc = s_rx * conj(s_tx) (OPT-3: GPU ref)
-   *   3. FFT -> find peak -> f_beat
-   *   4. Calculate range + SNR
+   * @param rx_data CPU complex<float> [num_antennas × num_samples] (row-major). flat matrix.
+   *
+   * @return HeterodyneResult с per-antenna f_beat, range_m, peak_amplitude, peak_snr_db.
+   *   @test_check result.success && result.antennas.size() == params_.num_antennas
    */
   HeterodyneResult Process(
       const std::vector<std::complex<float>>& rx_data);
 
   /**
-   * External GPU buffer variant.
-   * rx_gpu_ptr is a pointer to cl_mem (OpenCL) or hipDeviceptr_t (ROCm).
-   * External program owns the buffer — NOT freed by HeterodyneDechirp.
-   * params are passed from CPU (metadata: fs, B, N, antennas).
+   * @brief Pipeline для входа из внешнего GPU-буфера (cl_mem / hipDeviceptr_t), без H2D.
+   * @note External program owns the buffer — НЕ освобождается HeterodyneDechirp'ом.
+   * @note params передаются с CPU (metadata: fs, B, N, antennas).
+   *
+   * @param rx_gpu_ptr Внешний GPU-указатель [num_antennas × num_samples × complex<float>]; caller владеет.
+   *   @test { pattern=gpu_pointer, values=["valid_alloc", nullptr] }
+   * @param params Параметры LFM (метаданные: fs, B, N, num_antennas).
+   *   @test_ref HeterodyneParams
+   *
+   * @return HeterodyneResult с per-antenna f_beat, range_m, peak_amplitude, peak_snr_db.
+   *   @test_check result.success && result.antennas.size() == params.num_antennas
    */
   HeterodyneResult ProcessExternal(
       void* rx_gpu_ptr,

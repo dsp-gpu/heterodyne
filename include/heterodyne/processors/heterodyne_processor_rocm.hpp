@@ -92,7 +92,18 @@ public:
   HeterodyneProcessorROCm(HeterodyneProcessorROCm&& other) noexcept;
   HeterodyneProcessorROCm& operator=(HeterodyneProcessorROCm&& other) noexcept;
 
-  /** Dechirp: s_dc = conj(s_rx * s_ref) on GPU */
+  /**
+   * @brief Перегрузка `Dechirp` — wrapper, делегирует в основную с аргументами (rx_data, ref_data, params, nullptr). Формула: s_dc = conj(s_rx * s_ref) на GPU.
+   * @see Dechirp (основная перегрузка)
+   *
+   * @param rx_data CPU-данные [num_antennas × num_samples] complex<float> (flat).
+   * @param ref_data Reference [num_samples] complex<float> = conj(s_tx).
+   * @param params Параметры LFM (num_antennas, num_samples, sample_rate, ...).
+   *   @test_ref HeterodyneParams
+   *
+   * @return Dechirp-данные [num_antennas × num_samples] complex<float>.
+   *   @test_check result.size() == params.num_antennas * params.num_samples
+   */
   std::vector<std::complex<float>> Dechirp(
       const std::vector<std::complex<float>>& rx_data,
       const std::vector<std::complex<float>>& ref_data,
@@ -100,13 +111,37 @@ public:
     return Dechirp(rx_data, ref_data, params, nullptr);
   }
 
+  /**
+   * @brief Dechirp с CPU-входом и сборкой ROCm-событий профилирования. H2D → multiply kernel → D2H.
+   *
+   * @param rx_data CPU-данные [num_antennas × num_samples] complex<float> (flat).
+   * @param ref_data Reference [num_samples] complex<float> = conj(s_tx).
+   * @param params Параметры LFM (num_antennas, num_samples, sample_rate, ...).
+   *   @test_ref HeterodyneParams
+   * @param prof_events Сборщик ROCm-событий профилирования (опционально).
+   *   @test { values=[nullptr] }
+   *
+   * @return Dechirp-данные [num_antennas × num_samples] complex<float>.
+   *   @test_check result.size() == params.num_antennas * params.num_samples
+   */
   std::vector<std::complex<float>> Dechirp(
       const std::vector<std::complex<float>>& rx_data,
       const std::vector<std::complex<float>>& ref_data,
       const HeterodyneParams& params,
       HeterodyneROCmProfEvents* prof_events);
 
-  /** Frequency correction: multiply by exp(j * phase_step * n) */
+  /**
+   * @brief Перегрузка `Correct` — wrapper, делегирует в основную с аргументами (dc_data, f_beat_hz, params, nullptr). Frequency correction: умножение на exp(j * phase_step * n).
+   * @see Correct (основная перегрузка)
+   *
+   * @param dc_data Dechirp-данные [num_antennas × num_samples] complex<float>.
+   * @param f_beat_hz Beat-частоты по антеннам [num_antennas], Гц.
+   * @param params Параметры LFM (num_antennas, num_samples, sample_rate, ...).
+   *   @test_ref HeterodyneParams
+   *
+   * @return Скорректированные данные [num_antennas × num_samples] complex<float>.
+   *   @test_check result.size() == params.num_antennas * params.num_samples
+   */
   std::vector<std::complex<float>> Correct(
       const std::vector<std::complex<float>>& dc_data,
       const std::vector<float>& f_beat_hz,
@@ -114,13 +149,38 @@ public:
     return Correct(dc_data, f_beat_hz, params, nullptr);
   }
 
+  /**
+   * @brief Частотная коррекция (сдвиг f_beat → DC) с ROCm-профилированием. exp(-j·2π·f_beat·t).
+   *
+   * @param dc_data Dechirp-данные [num_antennas × num_samples] complex<float>.
+   * @param f_beat_hz Beat-частоты по антеннам [num_antennas], Гц.
+   * @param params Параметры LFM (num_antennas, num_samples, sample_rate, ...).
+   *   @test_ref HeterodyneParams
+   * @param prof_events Сборщик ROCm-событий профилирования (опционально).
+   *   @test { values=[nullptr] }
+   *
+   * @return Скорректированные данные [num_antennas × num_samples] complex<float>.
+   *   @test_check result.size() == params.num_antennas * params.num_samples
+   */
   std::vector<std::complex<float>> Correct(
       const std::vector<std::complex<float>>& dc_data,
       const std::vector<float>& f_beat_hz,
       const HeterodyneParams& params,
       HeterodyneROCmProfEvents* prof_events);
 
-  /** Dechirp from external GPU buffer (void* = hipDeviceptr_t) */
+  /**
+   * @brief Перегрузка `DechirpFromGPU` — wrapper, делегирует в основную с аргументами (rx_gpu_ptr, ref_data, params, nullptr). Dechirp из внешнего GPU-буфера (void* = hipDeviceptr_t).
+   * @see DechirpFromGPU (основная перегрузка)
+   *
+   * @param rx_gpu_ptr Внешний GPU-буфер (hipDeviceptr_t) [num_antennas × num_samples]; caller владеет.
+   *   @test { pattern=gpu_pointer, values=["valid_alloc", nullptr] }
+   * @param ref_data Reference [num_samples] complex<float> на CPU (H2D внутри метода).
+   * @param params Параметры LFM (num_antennas, num_samples, sample_rate, ...).
+   *   @test_ref HeterodyneParams
+   *
+   * @return Dechirp-данные на CPU [num_antennas × num_samples] complex<float>.
+   *   @test_check result.size() == params.num_antennas * params.num_samples
+   */
   std::vector<std::complex<float>> DechirpFromGPU(
       void* rx_gpu_ptr,
       const std::vector<std::complex<float>>& ref_data,
@@ -128,13 +188,40 @@ public:
     return DechirpFromGPU(rx_gpu_ptr, ref_data, params, nullptr);
   }
 
+  /**
+   * @brief Dechirp с внешним GPU-входом и ROCm-профилированием. Без H2D для rx, есть H2D для ref.
+   *
+   * @param rx_gpu_ptr Внешний GPU-буфер (hipDeviceptr_t) [num_antennas × num_samples]; caller владеет.
+   *   @test { pattern=gpu_pointer, values=["valid_alloc", nullptr] }
+   * @param ref_data Reference [num_samples] complex<float> на CPU (H2D внутри метода).
+   * @param params Параметры LFM (num_antennas, num_samples, sample_rate, ...).
+   *   @test_ref HeterodyneParams
+   * @param prof_events Сборщик ROCm-событий профилирования (опционально).
+   *   @test { values=[nullptr] }
+   *
+   * @return Dechirp-данные на CPU [num_antennas × num_samples] complex<float>.
+   *   @test_check result.size() == params.num_antennas * params.num_samples
+   */
   std::vector<std::complex<float>> DechirpFromGPU(
       void* rx_gpu_ptr,
       const std::vector<std::complex<float>>& ref_data,
       const HeterodyneParams& params,
       HeterodyneROCmProfEvents* prof_events);
 
-  /** OPT-3: Both rx and ref already on GPU */
+  /**
+   * @brief Перегрузка `DechirpWithGPURef` — wrapper, делегирует в основную с аргументами (rx_gpu_ptr, ref_gpu_ptr, params, nullptr). OPT-3: и rx, и ref уже на GPU.
+   * @see DechirpWithGPURef (основная перегрузка)
+   *
+   * @param rx_gpu_ptr Внешний GPU-буфер с rx [num_antennas × num_samples]; caller владеет.
+   *   @test { pattern=gpu_pointer, values=["valid_alloc", nullptr] }
+   * @param ref_gpu_ptr Внешний GPU-буфер с conj(LFM) ref [num_samples]; caller владеет.
+   *   @test { pattern=gpu_pointer, values=["valid_alloc", nullptr] }
+   * @param params Параметры LFM (num_antennas, num_samples, sample_rate, ...).
+   *   @test_ref HeterodyneParams
+   *
+   * @return Dechirp-данные на CPU [num_antennas × num_samples] complex<float>.
+   *   @test_check result.size() == params.num_antennas * params.num_samples
+   */
   std::vector<std::complex<float>> DechirpWithGPURef(
       void* rx_gpu_ptr,
       void* ref_gpu_ptr,
@@ -142,6 +229,21 @@ public:
     return DechirpWithGPURef(rx_gpu_ptr, ref_gpu_ptr, params, nullptr);
   }
 
+  /**
+   * @brief OPT-3 dechirp: rx и ref уже на GPU, без PCIe для ref. С ROCm-профилированием.
+   *
+   * @param rx_gpu_ptr Внешний GPU-буфер с rx [num_antennas × num_samples]; caller владеет.
+   *   @test { pattern=gpu_pointer, values=["valid_alloc", nullptr] }
+   * @param ref_gpu_ptr Внешний GPU-буфер с conj(LFM) ref [num_samples]; caller владеет.
+   *   @test { pattern=gpu_pointer, values=["valid_alloc", nullptr] }
+   * @param params Параметры LFM (num_antennas, num_samples, sample_rate, ...).
+   *   @test_ref HeterodyneParams
+   * @param prof_events Сборщик ROCm-событий профилирования (опционально).
+   *   @test { values=[nullptr] }
+   *
+   * @return Dechirp-данные на CPU [num_antennas × num_samples] complex<float>.
+   *   @test_check result.size() == params.num_antennas * params.num_samples
+   */
   std::vector<std::complex<float>> DechirpWithGPURef(
       void* rx_gpu_ptr,
       void* ref_gpu_ptr,
@@ -191,6 +293,16 @@ public:
   explicit HeterodyneProcessorROCm(IBackend* /*backend*/) {}
   ~HeterodyneProcessorROCm() = default;
 
+  /**
+   * @brief Stub: бросает runtime_error — Dechirp доступен только в ROCm-сборке.
+   *
+   *
+   * @return Никогда не возвращает (всегда throw).
+   *   @test_check throws std::runtime_error
+   *
+   * @throws std::runtime_error всегда: "ROCm not enabled".
+   *   @test_check throws std::runtime_error
+   */
   std::vector<std::complex<float>> Dechirp(
       const std::vector<std::complex<float>>& /*rx_data*/,
       const std::vector<std::complex<float>>& /*ref_data*/,
@@ -198,6 +310,16 @@ public:
     throw std::runtime_error("HeterodyneProcessorROCm::Dechirp: ROCm not enabled");
   }
 
+  /**
+   * @brief Stub: бросает runtime_error — Correct доступен только в ROCm-сборке.
+   *
+   *
+   * @return Никогда не возвращает (всегда throw).
+   *   @test_check throws std::runtime_error
+   *
+   * @throws std::runtime_error всегда: "ROCm not enabled".
+   *   @test_check throws std::runtime_error
+   */
   std::vector<std::complex<float>> Correct(
       const std::vector<std::complex<float>>& /*dc_data*/,
       const std::vector<float>& /*f_beat_hz*/,
@@ -205,6 +327,16 @@ public:
     throw std::runtime_error("HeterodyneProcessorROCm::Correct: ROCm not enabled");
   }
 
+  /**
+   * @brief Stub: бросает runtime_error — DechirpFromGPU доступен только в ROCm-сборке.
+   *
+   *
+   * @return Никогда не возвращает (всегда throw).
+   *   @test_check throws std::runtime_error
+   *
+   * @throws std::runtime_error всегда: "ROCm not enabled".
+   *   @test_check throws std::runtime_error
+   */
   std::vector<std::complex<float>> DechirpFromGPU(
       void* /*rx_gpu_ptr*/,
       const std::vector<std::complex<float>>& /*ref_data*/,
@@ -212,6 +344,16 @@ public:
     throw std::runtime_error("HeterodyneProcessorROCm::DechirpFromGPU: ROCm not enabled");
   }
 
+  /**
+   * @brief Stub: бросает runtime_error — DechirpWithGPURef доступен только в ROCm-сборке.
+   *
+   *
+   * @return Никогда не возвращает (всегда throw).
+   *   @test_check throws std::runtime_error
+   *
+   * @throws std::runtime_error всегда: "ROCm not enabled".
+   *   @test_check throws std::runtime_error
+   */
   std::vector<std::complex<float>> DechirpWithGPURef(
       void* /*rx_gpu_ptr*/,
       void* /*ref_gpu_ptr*/,

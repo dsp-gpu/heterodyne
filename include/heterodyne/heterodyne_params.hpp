@@ -58,6 +58,19 @@ struct HeterodyneResult {
   std::string error_message;
 
   // Helper: R = c * T * f_beat / (2 * B)
+  /**
+   * @brief Расчёт дальности по beat-частоте: R = c·T·f_beat / (2·B), c = 3e8 м/с.
+   *
+   * @param f_beat Beat-частота (после dechirp), Гц.
+   * @param sample_rate Частота дискретизации, Гц.
+   *   @test { range=[1.0..1e9], value=10e6, unit="Гц" }
+   * @param num_samples Число сэмплов на антенну (определяет длительность T).
+   *   @test { range=[100..1300000], value=6000 }
+   * @param bandwidth Полоса LFM B = f_end − f_start, Гц.
+   *
+   * @return Дальность до цели в метрах.
+   *   @test_check std::isfinite(result)
+   */
   static float CalcRange(float f_beat, float sample_rate,
                           int num_samples, float bandwidth) {
     float T = static_cast<float>(num_samples) / sample_rate;
