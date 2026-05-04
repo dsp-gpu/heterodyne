@@ -9,7 +9,7 @@ pybind11_add_module(dsp_heterodyne dsp_heterodyne_module.cpp)
 target_link_libraries(dsp_heterodyne PRIVATE DspHeterodyne::DspHeterodyne)
 target_include_directories(dsp_heterodyne PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}
-  ${CMAKE_SOURCE_DIR}/src/heterodyne/include
+  ${PROJECT_SOURCE_DIR}/src/heterodyne/include
   ${FETCHCONTENT_SOURCE_DIR_DSPCORE}/python)
 target_compile_definitions(dsp_heterodyne PRIVATE
   $<$<BOOL:${ENABLE_ROCM}>:ENABLE_ROCM=1>)

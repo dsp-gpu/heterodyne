@@ -29,11 +29,9 @@ PYBIND11_MODULE(dsp_heterodyne, m) {
               "  HeterodyneROCm   - LFM dechirp + correct (ROCm)\n";
 
 #if ENABLE_ROCM
-    py::class_<ROCmGPUContext>(m, "ROCmGPUContext",
-        "ROCm GPU context (creates HIP backend for AMD GPU).")
-        .def(py::init<int>(), py::arg("device_index") = 0)
-        .def_property_readonly("device_name", &ROCmGPUContext::device_name)
-        .def_property_readonly("device_index", &ROCmGPUContext::device_index);
+    // ROCmGPUContext зарегистрирован в dsp_core (один раз глобально).
+    // Импортируем для гарантии что core загружен перед использованием типа в сигнатурах.
+    py::module_::import("dsp_core");
 
     register_heterodyne_rocm(m);
 #endif
