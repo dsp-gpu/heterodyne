@@ -137,7 +137,7 @@ inline void register_heterodyne_rocm(py::module& m) {
       "                 num_samples=8000, num_antennas=5)\n"
       "  dc  = het.dechirp(rx_signal, ref_signal)\n"
       "  out = het.correct(dc, [f_beat_hz])\n")
-      .def(py::init<ROCmGPUContext&>(), py::arg("ctx"),
+      .def(py::init<ROCmGPUContext&>(), py::keep_alive<1, 2>(), py::arg("ctx"),
            "Create HeterodyneROCm bound to ROCm GPU context")
 
       .def("set_params", &PyHeterodyneROCm::set_params,

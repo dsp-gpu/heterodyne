@@ -166,10 +166,10 @@ inline void register_heterodyne(py::module& m) {
       "                 num_samples=8000, num_antennas=5)\n"
       "  result = het.process(rx_data)\n"
       "  print(result['antennas'][0]['f_beat_hz'])\n")
-      .def(py::init<GPUContext&>(), py::arg("ctx"),
+      .def(py::init<GPUContext&>(), py::keep_alive<1, 2>(), py::arg("ctx"),
            "Create HeterodyneDechirp bound to OpenCL GPU context")
 #if ENABLE_ROCM
-      .def(py::init<ROCmGPUContext&>(), py::arg("ctx"),
+      .def(py::init<ROCmGPUContext&>(), py::keep_alive<1, 2>(), py::arg("ctx"),
            "Create HeterodyneDechirp bound to ROCm GPU context (AMD)")
 #endif
 
