@@ -63,9 +63,9 @@ struct HeterodyneResult {
    *
    * @param f_beat Beat-частота (после dechirp), Гц.
    * @param sample_rate Частота дискретизации, Гц.
-   *   @test { range=[1.0..1e9], value=10e6, unit="Гц" }
+   *   @test { range=[1.0..1e9], value=10e6, unit="Гц", error_values=[0.0, 2e9, null] }
    * @param num_samples Число сэмплов на антенну (определяет длительность T).
-   *   @test { range=[100..1300000], value=6000 }
+   *   @test { range=[100..1300000], value=6000, error_values=[-1, 3000000, 3.14] }
    * @param bandwidth Полоса LFM B = f_end − f_start, Гц.
    *
    * @return Дальность до цели в метрах.

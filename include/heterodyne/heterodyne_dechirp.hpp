@@ -113,7 +113,7 @@ public:
    * @note params передаются с CPU (metadata: fs, B, N, antennas).
    *
    * @param rx_gpu_ptr Внешний GPU-указатель [num_antennas × num_samples × complex<float>]; caller владеет.
-   *   @test { pattern=gpu_pointer, values=["valid_alloc", nullptr] }
+   *   @test { pattern=gpu_pointer, values=["valid_alloc", nullptr], error_values=[0xDEADBEEF, null] }
    * @param params Параметры LFM (метаданные: fs, B, N, num_antennas).
    *   @test_ref HeterodyneParams
    *

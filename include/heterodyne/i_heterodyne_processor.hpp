@@ -100,7 +100,7 @@ public:
    * уже на GPU (cl_mem или hipDeviceptr_t), процессор НЕ освобождает его.
    *
    * @param rx_cl_mem  Внешний GPU-буфер [num_antennas × num_samples].
-   *   @test { pattern=gpu_pointer, values=["valid_alloc", nullptr] }
+   *   @test { pattern=gpu_pointer, values=["valid_alloc", nullptr], error_values=[0xDEADBEEF, null] }
    * @param ref_data   Reference (CPU → GPU внутри метода).
    * @param params     Параметры LFM.
    *   @test_ref HeterodyneParams

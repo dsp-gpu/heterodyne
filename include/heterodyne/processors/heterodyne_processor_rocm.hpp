@@ -119,7 +119,7 @@ public:
    * @param params Параметры LFM (num_antennas, num_samples, sample_rate, ...).
    *   @test_ref HeterodyneParams
    * @param prof_events Сборщик ROCm-событий профилирования (опционально).
-   *   @test { values=[nullptr] }
+   *   @test { values=[nullptr], error_values=[0xDEADBEEF, null] }
    *
    * @return Dechirp-данные [num_antennas × num_samples] complex<float>.
    *   @test_check result.size() == params.num_antennas * params.num_samples
@@ -157,7 +157,7 @@ public:
    * @param params Параметры LFM (num_antennas, num_samples, sample_rate, ...).
    *   @test_ref HeterodyneParams
    * @param prof_events Сборщик ROCm-событий профилирования (опционально).
-   *   @test { values=[nullptr] }
+   *   @test { values=[nullptr], error_values=[0xDEADBEEF, null] }
    *
    * @return Скорректированные данные [num_antennas × num_samples] complex<float>.
    *   @test_check result.size() == params.num_antennas * params.num_samples
@@ -173,7 +173,7 @@ public:
    * @see DechirpFromGPU (основная перегрузка)
    *
    * @param rx_gpu_ptr Внешний GPU-буфер (hipDeviceptr_t) [num_antennas × num_samples]; caller владеет.
-   *   @test { pattern=gpu_pointer, values=["valid_alloc", nullptr] }
+   *   @test { pattern=gpu_pointer, values=["valid_alloc", nullptr], error_values=[0xDEADBEEF, null] }
    * @param ref_data Reference [num_samples] complex<float> на CPU (H2D внутри метода).
    * @param params Параметры LFM (num_antennas, num_samples, sample_rate, ...).
    *   @test_ref HeterodyneParams
@@ -192,12 +192,12 @@ public:
    * @brief Dechirp с внешним GPU-входом и ROCm-профилированием. Без H2D для rx, есть H2D для ref.
    *
    * @param rx_gpu_ptr Внешний GPU-буфер (hipDeviceptr_t) [num_antennas × num_samples]; caller владеет.
-   *   @test { pattern=gpu_pointer, values=["valid_alloc", nullptr] }
+   *   @test { pattern=gpu_pointer, values=["valid_alloc", nullptr], error_values=[0xDEADBEEF, null] }
    * @param ref_data Reference [num_samples] complex<float> на CPU (H2D внутри метода).
    * @param params Параметры LFM (num_antennas, num_samples, sample_rate, ...).
    *   @test_ref HeterodyneParams
    * @param prof_events Сборщик ROCm-событий профилирования (опционально).
-   *   @test { values=[nullptr] }
+   *   @test { values=[nullptr], error_values=[0xDEADBEEF, null] }
    *
    * @return Dechirp-данные на CPU [num_antennas × num_samples] complex<float>.
    *   @test_check result.size() == params.num_antennas * params.num_samples
@@ -213,9 +213,9 @@ public:
    * @see DechirpWithGPURef (основная перегрузка)
    *
    * @param rx_gpu_ptr Внешний GPU-буфер с rx [num_antennas × num_samples]; caller владеет.
-   *   @test { pattern=gpu_pointer, values=["valid_alloc", nullptr] }
+   *   @test { pattern=gpu_pointer, values=["valid_alloc", nullptr], error_values=[0xDEADBEEF, null] }
    * @param ref_gpu_ptr Внешний GPU-буфер с conj(LFM) ref [num_samples]; caller владеет.
-   *   @test { pattern=gpu_pointer, values=["valid_alloc", nullptr] }
+   *   @test { pattern=gpu_pointer, values=["valid_alloc", nullptr], error_values=[0xDEADBEEF, null] }
    * @param params Параметры LFM (num_antennas, num_samples, sample_rate, ...).
    *   @test_ref HeterodyneParams
    *
@@ -233,13 +233,13 @@ public:
    * @brief OPT-3 dechirp: rx и ref уже на GPU, без PCIe для ref. С ROCm-профилированием.
    *
    * @param rx_gpu_ptr Внешний GPU-буфер с rx [num_antennas × num_samples]; caller владеет.
-   *   @test { pattern=gpu_pointer, values=["valid_alloc", nullptr] }
+   *   @test { pattern=gpu_pointer, values=["valid_alloc", nullptr], error_values=[0xDEADBEEF, null] }
    * @param ref_gpu_ptr Внешний GPU-буфер с conj(LFM) ref [num_samples]; caller владеет.
-   *   @test { pattern=gpu_pointer, values=["valid_alloc", nullptr] }
+   *   @test { pattern=gpu_pointer, values=["valid_alloc", nullptr], error_values=[0xDEADBEEF, null] }
    * @param params Параметры LFM (num_antennas, num_samples, sample_rate, ...).
    *   @test_ref HeterodyneParams
    * @param prof_events Сборщик ROCm-событий профилирования (опционально).
-   *   @test { values=[nullptr] }
+   *   @test { values=[nullptr], error_values=[0xDEADBEEF, null] }
    *
    * @return Dechirp-данные на CPU [num_antennas × num_samples] complex<float>.
    *   @test_check result.size() == params.num_antennas * params.num_samples
