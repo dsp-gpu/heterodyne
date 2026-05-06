@@ -1,0 +1,98 @@
+---
+schema_version: 1
+kind: use_case
+id: heterodyne_rocm
+repo: heterodyne
+title: "Как выполнить гетеродинную обработку сигналов на GPU с ROCm"
+synonyms:
+  ru:
+    - "гетеродинная обработка сигналов на GPU"
+    - "обработка сигналов с антеннами на ROCm"
+    - "вычисления гетеродина на GPU"
+    - "обработка радиолокационных сигналов с ROCm"
+    - "параллельная гетеродинная обработка"
+    - "вычисления БПФ для антенн"
+    - "оптимизация обработки сигналов на GPU"
+    - "высокопроизводительная гетеродинная обработка"
+  en:
+    - "heterodyne signal processing on GPU"
+    - "antenna array signal processing with ROCm"
+    - "GPU-based heterodyne computation"
+    - "radar signal processing with ROCm"
+    - "parallel heterodyne processing"
+    - "FFT for antenna arrays"
+    - "high-performance heterodyne processing"
+    - "GPU optimized signal processing"
+primary_class: PyHeterodyneROCm
+primary_method: PyHeterodyneROCm
+related_classes:
+related_use_cases:
+  - heterodyne__heterodyne_basic__usecase__v1
+  - heterodyne__heterodyne_benchmark_rocm__usecase__v1
+  - heterodyne__heterodyne_pipeline__usecase__v1
+maturity: stable
+language: cpp
+tags: [heterodyne, rocm, gpu, signal_processing, antenna_array, fft, radar, pybind11, dsp, parallel_processing]
+ai_generated: true
+human_verified: false
+operator: ai
+updated_at: 2026-05-06
+---
+
+# Use-case: Как выполнить гетеродинную обработку сигналов на GPU с ROCm
+
+## Когда применять
+
+Когда требуется обработка сигналов с несколькими антеннами на GPU с использованием ROCm для повышения производительности
+
+## Решение
+
+Класс — `PyHeterodyneROCm`, метод `PyHeterodyneROCm`.
+
+```cpp
+  int gpu_id = 0;
+
+  ROCmBackend backend;
+  try { backend.Initialize(gpu_id); }
+  catch (...) { return; }
+
+  TestRunner runner(&backend, "Heterodyne ROCm", gpu_id);
+
+  auto ref = GenerateConjRefCPU();
+
+  // ── Test 1: Single antenna ────────────────────────────────────
+  runner.test("single_antenna", [&]() {
+    auto rx = GenerateRxFlatCPU({100.f});
+    HeterodyneParams p; p.f_start=F_START; p.f_end=F_END;
+    p.sample_rate=FS; p.num_samples=N; p.num_antennas=1;
+    HeterodyneProcessorROCm proc(&backend);
+    auto dc = proc.Dechirp(rx, ref, p);
+    float f = CpuFindPeakFrequency(dc, 0, N, FS);
+    return ScalarAbsError(static_cast<double>(f), static_cast<double>(MU*100e-6f),
+                          F_BEAT_TOL_HZ, "f_beat");
+  });
+
+  // ── Test 2: 5 antennas ────────────────────────────────────────
+  runner.test("five_antennas", [&]() {
+    auto rx = GenerateRxFlatCPU(DELAYS_LINEAR_US);
+    HeterodyneParams p; p.f_start=F_START; p.f_end=F_END;
+    p.sample_rate=FS; p.num_samples=N; p.num_antennas=ANTENNAS;
+    HeterodyneProcessorROCm proc(&backend);
+    auto dc = proc.Dechirp(rx, ref, p);
+    return ValidateFBeat("five_antennas", dc, DELAYS_LINEAR_US, ANTENNAS);
+// ... (truncated)
+```
+
+## Граничные случаи
+
+_Не определены (нет `@throws` в Doxygen primary_method)._
+
+## Что делать дальше
+
+- См. [heterodyne__heterodyne_basic__usecase__v1](./heterodyne_basic.md)
+- См. [heterodyne__heterodyne_benchmark_rocm__usecase__v1](./heterodyne_benchmark_rocm.md)
+- См. [heterodyne__heterodyne_pipeline__usecase__v1](./heterodyne_pipeline.md)
+
+## Ссылки
+
+- Источник кода: `E:/DSP-GPU/heterodyne/tests/test_heterodyne_rocm.hpp:1`
