@@ -781,8 +781,8 @@ modules/heterodyne/
     └── test_heterodyne_benchmark_rocm.hpp    # ROCm: test runner
 
 python/
-├── py_heterodyne.hpp                   # pybind11: HeterodyneDechirp (OpenCL + ROCm)
 └── py_heterodyne_rocm.hpp              # pybind11: HeterodyneROCm (ROCm-only)
+                                        # py_heterodyne.hpp (OpenCL) удалён 08.05.2026
 
 Python_test/heterodyne/
 ├── conftest.py                         # DechirpParams, fixtures: het_proc, dechirp_params

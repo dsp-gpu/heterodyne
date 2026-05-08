@@ -227,9 +227,14 @@ public:
 
 ---
 
-## 7. Python — dsp_heterodyne.HeterodyneDechirp
+## 7. Python — dsp_heterodyne.HeterodyneDechirp — ⚠️ DEPRECATED 2026-05-08
 
-**Файл**: `python/py_heterodyne.hpp`
+> **Эта секция описывает старый OpenCL API (`HeterodyneDechirp`).**
+> `py_heterodyne.hpp` **удалён** (08.05.2026). Используй ROCm-версию:
+> `dsp_heterodyne.HeterodyneROCm` — биндинг в `python/py_heterodyne_rocm.hpp`.
+> Полная переработка секции — в TASK_remove_opencl_legacy_classes.
+
+**Файл** (удалён): ~~`python/py_heterodyne.hpp`~~
 
 ```python
 class HeterodyneDechirp:

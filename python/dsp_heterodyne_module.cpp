@@ -8,14 +8,10 @@
  *   result = proc.process(signal_data)
  *
  * Экспортируемые классы:
- *   HeterodyneDechirp — LFM dechirp (OpenCL)
  *   HeterodyneROCm    — LFM dechirp + correct (ROCm)
  */
 
 #include "py_helpers.hpp"
-
-// py_heterodyne.hpp — использует GPUContext (OpenCL), только nvidia-ветка
-// #include "py_heterodyne.hpp"
 
 #if ENABLE_ROCM
 #include "py_gpu_context.hpp"
