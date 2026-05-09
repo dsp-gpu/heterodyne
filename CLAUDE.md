@@ -39,6 +39,20 @@ heterodyne/
 - Не объединять Dechirp + FFT в один kernel — хранить раздельно для переиспользования.
 - Не изобретать LFM-генератор — он в `signal_generators::LFMGenerator`.
 
+<!-- BEGIN: RAG_CLAUDE_C4 (auto) -->
+## 🏗️ Архитектура (C4 — компактно)
+
+- **C1 System Context:** репо `heterodyne` (layer=compute). Полный C4 → `MemoryBank/.architecture/DSP-GPU_Design_C4_Full.md` §`heterodyne`
+- **C2 Container:** namespace из top key_classes (см. `.rag/_RAG.md`)
+- **C3 Component:** `key_classes` в `.rag/_RAG.md` (top по test_params)
+- **C4 Code:** HeterodyneProcessorROCm · HeterodyneResult · HeterodyneDechirp · PyHeterodyneDechirp
+
+## 🏷️ RAG теги
+
+`#layer:compute` `#repo:heterodyne` `#namespace:drv_gpu_lib` `#namespace:test_heterodyne_rocm` `#pattern:Pipeline:HeterodyneProcessorROCm` `#pattern:Pipeline:IHeterodyneProcessor` `#pattern:Bridge:IBackend`
+
+<!-- END: RAG_CLAUDE_C4 (auto) -->
+
 ## 🔗 Правила (path-scoped автоматически)
 
 - `09-rocm-only.md`

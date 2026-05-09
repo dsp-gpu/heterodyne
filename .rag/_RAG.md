@@ -97,7 +97,14 @@ used_by: []                              # TODO: AI-fill из других _RAG.
 python_modules:                          # TODO: auto from pybind_bindings
   - TODO
 
-tags: []                                 # TODO: AI-fill
+tags:                                    # auto-inferred (RAG_CLAUDE_C4)
+  - "#layer:compute"
+  - "#repo:heterodyne"
+  - "#namespace:drv_gpu_lib"
+  - "#namespace:test_heterodyne_rocm"
+  - "#pattern:Pipeline:HeterodyneProcessorROCm"
+  - "#pattern:Pipeline:IHeterodyneProcessor"
+  - "#pattern:Bridge:IBackend"
 
 notes: []                                # TODO: AI-fill из ai_summary
 
