@@ -49,9 +49,8 @@ heterodyne/
 
 ## 🏷️ RAG теги
 
-`#layer:compute` `#repo:heterodyne` `#namespace:drv_gpu_lib` `#namespace:test_heterodyne_rocm` `#pattern:Pipeline:HeterodyneProcessorROCm` `#pattern:Pipeline:IHeterodyneProcessor` `#pattern:Bridge:IBackend`
 
-<!-- END: RAG_CLAUDE_C4 (auto) -->
+`#layer:compute` `#repo:heterodyne` `#namespace:drv_gpu_lib` `#namespace:test_heterodyne_rocm` `#pattern:Pipeline:HeterodyneProcessorROCm` `#pattern:Pipeline:IHeterodyneProcessor` `#pattern:Facade:HeterodyneDechirp` `#pattern:Facade:HeterodyneProcessorROCm` `#pattern:Strategy:IHeterodyneProcessor`
 
 ## 🔗 Правила (path-scoped автоматически)
 

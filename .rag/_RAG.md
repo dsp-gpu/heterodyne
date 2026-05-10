@@ -108,7 +108,9 @@ tags:                                    # auto-inferred (RAG_CLAUDE_C4)
   - "#namespace:test_heterodyne_rocm"
   - "#pattern:Pipeline:HeterodyneProcessorROCm"
   - "#pattern:Pipeline:IHeterodyneProcessor"
-  - "#pattern:Bridge:IBackend"
+  - "#pattern:Facade:HeterodyneDechirp"
+  - "#pattern:Facade:HeterodyneProcessorROCm"
+  - "#pattern:Strategy:IHeterodyneProcessor"
 
 notes: []                                # TODO: AI-fill из ai_summary
 
