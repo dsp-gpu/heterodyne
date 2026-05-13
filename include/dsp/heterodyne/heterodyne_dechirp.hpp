@@ -53,15 +53,15 @@
 #include "i_heterodyne_processor.hpp"
 #include "heterodyne_params.hpp"
 #include <core/common/backend_type.hpp>
+#include <core/interface/i_backend.hpp>
 #include <dsp/signal_generators/generators/lfm_conjugate_generator_rocm.hpp>
 #include <dsp/signal_generators/params/signal_request.hpp>
 #include <dsp/signal_generators/params/system_sampling.hpp>
 #include <memory>
 
-namespace dsp::heterodyne {
 using namespace ::drv_gpu_lib;
 
-class IBackend;
+namespace dsp::heterodyne {
 
 /**
  * @class HeterodyneDechirp
@@ -146,7 +146,7 @@ private:
   HeterodyneResult                      last_result_;
 
   // OPT-4: Cached conjugate LFM generator (rebuilt only on SetParams)
-  std::unique_ptr<dsp::signal_generators::LfmConjugateGeneratorROCm> conj_gen_;
+  std::unique_ptr<::dsp::signal_generators::LfmConjugateGeneratorROCm> conj_gen_;
   bool params_dirty_ = true;  // true = need to rebuild conj_gen_
 };
 

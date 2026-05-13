@@ -117,8 +117,8 @@ public:
 
 private:
   ROCmGPUContext& ctx_;
-  drv_gpu_lib::HeterodyneProcessorROCm proc_;
-  drv_gpu_lib::HeterodyneParams params_;
+  ::dsp::heterodyne::HeterodyneProcessorROCm proc_;
+  ::dsp::heterodyne::HeterodyneParams params_;
 };
 
 // ============================================================================

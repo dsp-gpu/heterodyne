@@ -27,6 +27,9 @@
  */
 
 #include <dsp/heterodyne/heterodyne_dechirp.hpp>
+
+using namespace ::dsp::heterodyne;
+using namespace ::drv_gpu_lib;
 #include <dsp/heterodyne/heterodyne_params.hpp>
 
 #if ENABLE_ROCM
@@ -57,14 +60,14 @@ inline void run_pipeline_tests() {
   runner.test("full_pipeline", [&]() -> gpu_test_utils::TestResult {
     auto rx_flat = GenerateRxFlat(DELAYS_LINEAR_US);
 
-    drv_gpu_lib::HeterodyneParams params;
+    ::dsp::heterodyne::HeterodyneParams params;
     params.f_start = F_START;
     params.f_end = F_END;
     params.sample_rate = FS;
     params.num_samples = N;
     params.num_antennas = ANTENNAS;
 
-    drv_gpu_lib::HeterodyneDechirp het(&backend, drv_gpu_lib::BackendType::ROCm);
+    ::dsp::heterodyne::HeterodyneDechirp het(&backend, drv_gpu_lib::BackendType::ROCm);
     het.SetParams(params);
     auto result = het.Process(rx_flat);
 
@@ -97,14 +100,14 @@ inline void run_pipeline_tests() {
 
     (void)hipMemcpy(ext_buf, rx_flat.data(), buf_size, hipMemcpyHostToDevice);
 
-    drv_gpu_lib::HeterodyneParams params;
+    ::dsp::heterodyne::HeterodyneParams params;
     params.f_start = F_START;
     params.f_end = F_END;
     params.sample_rate = FS;
     params.num_samples = N;
     params.num_antennas = ANTENNAS;
 
-    drv_gpu_lib::HeterodyneDechirp het(&backend, drv_gpu_lib::BackendType::ROCm);
+    ::dsp::heterodyne::HeterodyneDechirp het(&backend, drv_gpu_lib::BackendType::ROCm);
     het.SetParams(params);
     auto result = het.ProcessExternal(ext_buf, params);
 

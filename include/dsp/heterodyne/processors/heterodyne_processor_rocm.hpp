@@ -60,8 +60,9 @@
 #include <utility>
 #include <vector>
 
-namespace dsp::heterodyne {
 using namespace ::drv_gpu_lib;
+
+namespace dsp::heterodyne {
 
 /// ROCm profiling events: (name, ROCmProfilingData) pairs collected during processing.
 using HeterodyneROCmProfEvents =
@@ -287,8 +288,9 @@ private:
 #include <core/interface/i_backend.hpp>
 #include <stdexcept>
 
-namespace dsp::heterodyne {
 using namespace ::drv_gpu_lib;
+
+namespace dsp::heterodyne {
 
 class HeterodyneProcessorROCm : public IHeterodyneProcessor {
 public:

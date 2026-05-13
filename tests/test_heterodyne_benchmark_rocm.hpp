@@ -63,7 +63,7 @@ inline int run() {
     backend->Initialize(0);
 
     // ── Параметры гетеродина ──────────────────────────────────────────────
-    drv_gpu_lib::HeterodyneParams params;
+    ::dsp::heterodyne::HeterodyneParams params;
     params.num_antennas = 5;
     params.num_samples  = 4000;
     params.sample_rate  = 12e6f;
@@ -79,7 +79,7 @@ inline int run() {
     const std::vector<float> f_beat_hz = {300e3f, 600e3f, 900e3f, 1200e3f, 1500e3f};
 
     // ── Создать процессор (компилирует HIP kernels один раз) ──────────────
-    drv_gpu_lib::HeterodyneProcessorROCm proc(backend.get());
+    ::dsp::heterodyne::HeterodyneProcessorROCm proc(backend.get());
 
     // ── Benchmark 1: Dechirp() ────────────────────────────────────────────
     std::cout << "\n--- Benchmark 1: HeterodyneProcessorROCm::Dechirp() ---\n";

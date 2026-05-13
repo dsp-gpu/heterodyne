@@ -25,7 +25,7 @@
  *
  * Использование:
  * @code
- *   drv_gpu_lib::HeterodyneProcessorROCm proc(backend);
+ *   ::dsp::heterodyne::HeterodyneProcessorROCm proc(backend);
  *   test_heterodyne_rocm::HeterodyneDechirpBenchmarkROCm bench(backend, proc, params, rx, ref);
  *   bench.Run();
  *   bench.Report();
@@ -54,8 +54,8 @@ class HeterodyneDechirpBenchmarkROCm : public drv_gpu_lib::GpuBenchmarkBase {
 public:
   HeterodyneDechirpBenchmarkROCm(
       drv_gpu_lib::IBackend* backend,
-      drv_gpu_lib::HeterodyneProcessorROCm& proc,
-      const drv_gpu_lib::HeterodyneParams& params,
+      ::dsp::heterodyne::HeterodyneProcessorROCm& proc,
+      const ::dsp::heterodyne::HeterodyneParams& params,
       const std::vector<std::complex<float>>& rx_data,
       const std::vector<std::complex<float>>& ref_data,
       GpuBenchmarkBase::Config cfg = {
@@ -73,15 +73,15 @@ protected:
 
   /// Замер — Dechirp с HeterodyneROCmProfEvents → ProfilingFacade::BatchRecord
   void ExecuteKernelTimed() override {
-    drv_gpu_lib::HeterodyneROCmProfEvents events;
+    ::dsp::heterodyne::HeterodyneROCmProfEvents events;
     proc_.Dechirp(rx_data_, ref_data_, params_, &events);
     drv_gpu_lib::profiling::ProfilingFacade::GetInstance()
         .BatchRecord(gpu_id_, "heterodyne/dechirp", events);
   }
 
 private:
-  drv_gpu_lib::HeterodyneProcessorROCm&    proc_;
-  drv_gpu_lib::HeterodyneParams            params_;
+  ::dsp::heterodyne::HeterodyneProcessorROCm&    proc_;
+  ::dsp::heterodyne::HeterodyneParams            params_;
   std::vector<std::complex<float>>         rx_data_;
   std::vector<std::complex<float>>         ref_data_;
 };
@@ -92,8 +92,8 @@ class HeterodyneCorrectBenchmarkROCm : public drv_gpu_lib::GpuBenchmarkBase {
 public:
   HeterodyneCorrectBenchmarkROCm(
       drv_gpu_lib::IBackend* backend,
-      drv_gpu_lib::HeterodyneProcessorROCm& proc,
-      const drv_gpu_lib::HeterodyneParams& params,
+      ::dsp::heterodyne::HeterodyneProcessorROCm& proc,
+      const ::dsp::heterodyne::HeterodyneParams& params,
       const std::vector<std::complex<float>>& dc_data,
       const std::vector<float>& f_beat_hz,
       GpuBenchmarkBase::Config cfg = {
@@ -111,15 +111,15 @@ protected:
 
   /// Замер — Correct с HeterodyneROCmProfEvents → ProfilingFacade::BatchRecord
   void ExecuteKernelTimed() override {
-    drv_gpu_lib::HeterodyneROCmProfEvents events;
+    ::dsp::heterodyne::HeterodyneROCmProfEvents events;
     proc_.Correct(dc_data_, f_beat_hz_, params_, &events);
     drv_gpu_lib::profiling::ProfilingFacade::GetInstance()
         .BatchRecord(gpu_id_, "heterodyne/correct", events);
   }
 
 private:
-  drv_gpu_lib::HeterodyneProcessorROCm&    proc_;
-  drv_gpu_lib::HeterodyneParams            params_;
+  ::dsp::heterodyne::HeterodyneProcessorROCm&    proc_;
+  ::dsp::heterodyne::HeterodyneParams            params_;
   std::vector<std::complex<float>>         dc_data_;
   std::vector<float>                       f_beat_hz_;
 };

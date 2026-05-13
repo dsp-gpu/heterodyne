@@ -50,7 +50,6 @@
 #include <stdexcept>
 
 namespace dsp::heterodyne {
-using namespace ::drv_gpu_lib;
 
 /**
  * @class IHeterodyneProcessor

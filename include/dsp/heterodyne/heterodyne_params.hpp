@@ -20,7 +20,6 @@
 #include <string>
 
 namespace dsp::heterodyne {
-using namespace ::drv_gpu_lib;
 
 /** LFM parameters for dechirp */
 struct HeterodyneParams {

@@ -27,8 +27,9 @@
 
 #if ENABLE_ROCM
 
-namespace dsp::heterodyne {
 using namespace ::drv_gpu_lib;
+
+namespace dsp::heterodyne {
 namespace kernels {
 
 // ════════════════════════════════════════════════════════════════════════════

@@ -47,8 +47,9 @@
 
 using fft_func_utils::MakeROCmDataFromEvents;
 
-namespace dsp::heterodyne {
 using namespace ::drv_gpu_lib;
+
+namespace dsp::heterodyne {
 
 // ════════════════════════════════════════════════════════════════════════════
 // PART 1: Constructor, Destructor, Move

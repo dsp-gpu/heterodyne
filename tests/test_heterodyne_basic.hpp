@@ -32,6 +32,9 @@
  */
 
 #include <dsp/heterodyne/heterodyne_dechirp.hpp>
+
+using namespace ::dsp::heterodyne;
+using namespace ::drv_gpu_lib;
 #include <dsp/heterodyne/heterodyne_params.hpp>
 
 #if ENABLE_ROCM
