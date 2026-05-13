@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /**
  * @brief Параметры и результаты LFM dechirp (POD-структуры).
@@ -19,7 +19,8 @@
 #include <vector>
 #include <string>
 
-namespace drv_gpu_lib {
+namespace dsp::heterodyne {
+using namespace ::drv_gpu_lib;
 
 /** LFM parameters for dechirp */
 struct HeterodyneParams {
@@ -78,4 +79,4 @@ struct HeterodyneResult {
   }
 };
 
-}  // namespace drv_gpu_lib
+} // namespace dsp::heterodyne

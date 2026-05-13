@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /**
  * @file py_heterodyne_rocm.hpp
@@ -20,8 +20,8 @@
  * @date 2026-02-24
  */
 
-#include <heterodyne/processors/heterodyne_processor_rocm.hpp>
-#include <heterodyne/heterodyne_params.hpp>
+#include <dsp/heterodyne/processors/heterodyne_processor_rocm.hpp>
+#include <dsp/heterodyne/heterodyne_params.hpp>
 
 // ============================================================================
 // PyHeterodyneROCm — LFM heterodyne processor (ROCm)

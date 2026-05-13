@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 // ============================================================================
 // HeterodyneProcessorROCm — ROCm/HIP реализация IHeterodyneProcessor
@@ -60,7 +60,8 @@
 #include <utility>
 #include <vector>
 
-namespace drv_gpu_lib {
+namespace dsp::heterodyne {
+using namespace ::drv_gpu_lib;
 
 /// ROCm profiling events: (name, ROCmProfilingData) pairs collected during processing.
 using HeterodyneROCmProfEvents =
@@ -274,7 +275,7 @@ private:
   static constexpr unsigned int kBlockSize = 256;
 };
 
-}  // namespace drv_gpu_lib
+} // namespace dsp::heterodyne
 
 #else  // !ENABLE_ROCM
 
@@ -286,7 +287,8 @@ private:
 #include <core/interface/i_backend.hpp>
 #include <stdexcept>
 
-namespace drv_gpu_lib {
+namespace dsp::heterodyne {
+using namespace ::drv_gpu_lib;
 
 class HeterodyneProcessorROCm : public IHeterodyneProcessor {
 public:
@@ -362,6 +364,6 @@ public:
   }
 };
 
-}  // namespace drv_gpu_lib
+} // namespace dsp::heterodyne
 
 #endif  // ENABLE_ROCM

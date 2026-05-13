@@ -1,4 +1,4 @@
-#define _USE_MATH_DEFINES
+﻿#define _USE_MATH_DEFINES
 /**
  * @file heterodyne_dechirp.cpp
  * @brief Heterodyne dechirp LFM - facade implementation
@@ -15,20 +15,21 @@
  * @date 2026-02-21
  */
 
-#include <heterodyne/heterodyne_dechirp.hpp>
-#include <heterodyne/processors/heterodyne_processor_rocm.hpp>
+#include <dsp/heterodyne/heterodyne_dechirp.hpp>
+#include <dsp/heterodyne/processors/heterodyne_processor_rocm.hpp>
 
 // Spectrum peak finding: FFT + OnePeak (parabolic interpolation) on GPU
 #include <stdexcept>
 #if ENABLE_ROCM
-#include <spectrum/factory/spectrum_processor_factory.hpp>
+#include <dsp/spectrum/factory/spectrum_processor_factory.hpp>
 #endif
 
 #include <cmath>
 #include <stdexcept>
 #include <algorithm>
 
-namespace drv_gpu_lib {
+namespace dsp::heterodyne {
+using namespace ::drv_gpu_lib;
 
 // ════════════════════════════════════════════════════════════════════════════
 // Constructor
@@ -76,17 +77,17 @@ void HeterodyneDechirp::SetParams(const HeterodyneParams& params) {
 void HeterodyneDechirp::EnsureConjugateGenerator() {
   if (!params_dirty_ && conj_gen_) return;
 
-  signal_gen::LfmParams lfm_p;
+  dsp::signal_generators::LfmParams lfm_p;
   lfm_p.f_start = params_.f_start;
   lfm_p.f_end   = params_.f_end;
   lfm_p.amplitude = 1.0;
   lfm_p.complex_iq = true;
 
-  signal_gen::SystemSampling sys;
+  dsp::signal_generators::SystemSampling sys;
   sys.fs = params_.sample_rate;
   sys.length = static_cast<size_t>(params_.num_samples);
 
-  conj_gen_ = std::make_unique<signal_gen::LfmConjugateGeneratorROCm>(backend_, lfm_p);
+  conj_gen_ = std::make_unique<dsp::signal_generators::LfmConjugateGeneratorROCm>(backend_, lfm_p);
   conj_gen_->SetSampling(sys);
   params_dirty_ = false;
 }
@@ -164,20 +165,20 @@ HeterodyneResult HeterodyneDechirp::BuildResult(
     const HeterodyneParams& params) {
 
   HeterodyneResult result;
-  std::vector<antenna_fft::SpectrumResult> spec_results;
+  std::vector<dsp::spectrum::SpectrumResult> spec_results;
 
 #if ENABLE_ROCM
   if (compute_backend_ == BackendType::ROCm) {
-    antenna_fft::SpectrumParams spec_params;
+    dsp::spectrum::SpectrumParams spec_params;
     spec_params.antenna_count = static_cast<uint32_t>(params.num_antennas);
     spec_params.n_point = static_cast<uint32_t>(params.num_samples);
     spec_params.repeat_count = 1;
     spec_params.sample_rate = params.sample_rate;
     spec_params.search_range = 5000;
-    spec_params.peak_mode = antenna_fft::PeakSearchMode::ONE_PEAK;
+    spec_params.peak_mode = dsp::spectrum::PeakSearchMode::ONE_PEAK;
     spec_params.memory_limit = 0.8f;
 
-    auto processor = antenna_fft::SpectrumProcessorFactory::Create(
+    auto processor = dsp::spectrum::SpectrumProcessorFactory::Create(
         BackendType::ROCm, backend_);
     processor->Initialize(spec_params);
     spec_results = processor->ProcessFromCPU(dc_data);
@@ -230,4 +231,4 @@ HeterodyneResult HeterodyneDechirp::BuildResult(
   return result;
 }
 
-}  // namespace drv_gpu_lib
+} // namespace dsp::heterodyne

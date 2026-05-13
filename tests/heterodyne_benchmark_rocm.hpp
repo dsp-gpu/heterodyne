@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 // ============================================================================
 // heterodyne_benchmark_rocm — benchmark-классы HeterodyneProcessorROCm
@@ -38,7 +38,7 @@
 
 #if ENABLE_ROCM
 
-#include <heterodyne/processors/heterodyne_processor_rocm.hpp>
+#include <dsp/heterodyne/processors/heterodyne_processor_rocm.hpp>
 #include <core/services/gpu_benchmark_base.hpp>
 #include <core/services/profiling/profiling_facade.hpp>
 

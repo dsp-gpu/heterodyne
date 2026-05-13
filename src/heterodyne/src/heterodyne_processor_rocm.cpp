@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file heterodyne_processor_rocm.cpp
  * @brief ROCm/HIP implementation of heterodyne dechirp processor
  *
@@ -28,9 +28,9 @@
 
 #if ENABLE_ROCM
 
-#include <heterodyne/processors/heterodyne_processor_rocm.hpp>
-#include <heterodyne/kernels/heterodyne_kernels_rocm.hpp>
-#include <spectrum/utils/rocm_profiling_helpers.hpp>
+#include <dsp/heterodyne/processors/heterodyne_processor_rocm.hpp>
+#include <dsp/heterodyne/kernels/heterodyne_kernels_rocm.hpp>
+#include <dsp/spectrum/utils/rocm_profiling_helpers.hpp>
 #include <core/services/console_output.hpp>
 
 #include <stdexcept>
@@ -47,7 +47,8 @@
 
 using fft_func_utils::MakeROCmDataFromEvents;
 
-namespace drv_gpu_lib {
+namespace dsp::heterodyne {
+using namespace ::drv_gpu_lib;
 
 // ════════════════════════════════════════════════════════════════════════════
 // PART 1: Constructor, Destructor, Move
@@ -589,7 +590,7 @@ void HeterodyneProcessorROCm::ReleaseGpuResources() {
   cached_antennas_ = 0;
 }
 
-}  // namespace drv_gpu_lib
+} // namespace dsp::heterodyne
 
 #else  // !ENABLE_ROCM
 

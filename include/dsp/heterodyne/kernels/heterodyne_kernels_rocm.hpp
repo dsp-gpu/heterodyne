@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /**
  * @brief HIP kernel-source для heterodyne dechirp (multiply + correct).
@@ -27,7 +27,8 @@
 
 #if ENABLE_ROCM
 
-namespace drv_gpu_lib {
+namespace dsp::heterodyne {
+using namespace ::drv_gpu_lib;
 namespace kernels {
 
 // ════════════════════════════════════════════════════════════════════════════
@@ -125,6 +126,6 @@ __global__ void dechirp_correct(
 }
 
 }  // namespace kernels
-}  // namespace drv_gpu_lib
+} // namespace dsp::heterodyne
 
 #endif  // ENABLE_ROCM

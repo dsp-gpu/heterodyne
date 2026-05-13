@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 // ============================================================================
 // test_heterodyne_pipeline — интеграционные тесты HeterodyneDechirp facade
@@ -26,8 +26,8 @@
  * @date 2026-02-21 (migrated 2026-03-23)
  */
 
-#include <heterodyne/heterodyne_dechirp.hpp>
-#include <heterodyne/heterodyne_params.hpp>
+#include <dsp/heterodyne/heterodyne_dechirp.hpp>
+#include <dsp/heterodyne/heterodyne_params.hpp>
 
 #if ENABLE_ROCM
 

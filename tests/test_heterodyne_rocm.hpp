@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 // ============================================================================
 // test_heterodyne_rocm — тесты HeterodyneProcessorROCm (ROCm)
@@ -37,9 +37,9 @@
 #include <random>
 
 #if ENABLE_ROCM
-#include <heterodyne/processors/heterodyne_processor_rocm.hpp>
-#include <heterodyne/heterodyne_dechirp.hpp>
-#include <heterodyne/heterodyne_params.hpp>
+#include <dsp/heterodyne/processors/heterodyne_processor_rocm.hpp>
+#include <dsp/heterodyne/heterodyne_dechirp.hpp>
+#include <dsp/heterodyne/heterodyne_params.hpp>
 #include <core/backends/rocm/rocm_backend.hpp>
 
 #include "test_utils/test_utils.hpp"

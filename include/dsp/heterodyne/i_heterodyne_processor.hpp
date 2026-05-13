@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 // ============================================================================
 // IHeterodyneProcessor — Strategy-интерфейс LFM dechirp процессора
@@ -49,7 +49,8 @@
 #include <complex>
 #include <stdexcept>
 
-namespace drv_gpu_lib {
+namespace dsp::heterodyne {
+using namespace ::drv_gpu_lib;
 
 /**
  * @class IHeterodyneProcessor
@@ -127,4 +128,4 @@ public:
   }
 };
 
-}  // namespace drv_gpu_lib
+} // namespace dsp::heterodyne
