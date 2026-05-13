@@ -1,7 +1,7 @@
----
+﻿---
 schema_version: 1
 repo: heterodyne
-class_fqn: drv_gpu_lib::HeterodyneProcessorROCm
+class_fqn: dsp::heterodyne::HeterodyneProcessorROCm
 file: E:/DSP-GPU/heterodyne/include/heterodyne/processors/heterodyne_processor_rocm.hpp
 line: 41
 brief: "Обрабатывает ЛЧМ-сигналы через ROCm/HIP для радиолокационной дешифровки"
@@ -15,7 +15,7 @@ synonyms_en: ['ROCm processing', 'chirp dechirping', 'GPU radar', 'stretch proce
 tags: ['ROCm', 'GPU', 'дешифровка', 'ЛЧМ', 'обработка сигналов']
 ---
 
-# `drv_gpu_lib::HeterodyneProcessorROCm` — карточка класса
+# `dsp::heterodyne::HeterodyneProcessorROCm` — карточка класса
 
 > **Этот файл генерируется автоматически** командой `dsp-asst rag cards build --repo heterodyne --class HeterodyneProcessorROCm`.
 > Не править руками — правки потеряются при следующем refresh.
@@ -35,7 +35,7 @@ tags: ['ROCm', 'GPU', 'дешифровка', 'ЛЧМ', 'обработка си
 
 **Пример**:
 ```cpp
-#include "heterodyne/processors/heterodyne_processor_rocm.hpp"
+#include "dsp/heterodyne/processors/heterodyne_processor_rocm.hpp"
 using namespace drv_gpu_lib;
 
 int main() {

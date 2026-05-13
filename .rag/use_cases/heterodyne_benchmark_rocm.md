@@ -1,4 +1,4 @@
----
+﻿---
 schema_version: 1
 kind: use_case
 id: heterodyne_benchmark_rocm
@@ -67,7 +67,7 @@ updated_at: 2026-05-06
     backend->Initialize(0);
 
     // ── Параметры гетеродина ──────────────────────────────────────────────
-    drv_gpu_lib::HeterodyneParams params;
+    dsp::heterodyne::HeterodyneParams params;
     params.num_antennas = 5;
     params.num_samples  = 4000;
     params.sample_rate  = 12e6f;

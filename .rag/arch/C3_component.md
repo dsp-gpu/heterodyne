@@ -1,4 +1,4 @@
----
+﻿---
 schema_version: 1
 repo: heterodyne
 arch_level: c3
@@ -16,25 +16,25 @@ description: "C3 Component — key classes и интерфейсы репо hete
 
 ## Key classes (top-10 по test_params)
 
-### `drv_gpu_lib::HeterodyneProcessorROCm`
+### `dsp::heterodyne::HeterodyneProcessorROCm`
 
 - **Namespace:** `drv_gpu_lib`
 - **Методы:** 24, **test_params rows:** 42
 - **Brief:** *(описание не задано)*
 
-### `drv_gpu_lib::HeterodyneDechirp`
+### `dsp::heterodyne::HeterodyneDechirp`
 
 - **Namespace:** `drv_gpu_lib`
 - **Методы:** 8, **test_params rows:** 5
 - **Brief:** *(описание не задано)*
 
-### `drv_gpu_lib::HeterodyneResult`
+### `dsp::heterodyne::HeterodyneResult`
 
 - **Namespace:** `drv_gpu_lib`
 - **Методы:** 1, **test_params rows:** 5
 - **Brief:** Overall dechirp result
 
-### `drv_gpu_lib::IHeterodyneProcessor`
+### `dsp::heterodyne::IHeterodyneProcessor`
 
 - **Namespace:** `drv_gpu_lib`
 - **Методы:** 2, **test_params rows:** 1
@@ -52,7 +52,7 @@ description: "C3 Component — key classes и интерфейсы репо hete
 - **Методы:** 5, **test_params rows:** 0
 - **Brief:** *(описание не задано)*
 
-### `drv_gpu_lib::HeterodyneParams`
+### `dsp::heterodyne::HeterodyneParams`
 
 - **Namespace:** `drv_gpu_lib`
 - **Методы:** 4, **test_params rows:** 0
@@ -79,5 +79,5 @@ description: "C3 Component — key classes и интерфейсы репо hete
 ## Интерфейсы (наследуемые)
 
 - `drv_gpu_lib::IBackend` (потенциальных реализаций: 6)
-- `drv_gpu_lib::IHeterodyneProcessor` (потенциальных реализаций: 2)
+- `dsp::heterodyne::IHeterodyneProcessor` (потенциальных реализаций: 2)
 

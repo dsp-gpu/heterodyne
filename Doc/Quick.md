@@ -1,4 +1,4 @@
-# Heterodyne — Краткий справочник
+﻿# Heterodyne — Краткий справочник
 
 > Дечирп (stretch processing) ЛЧМ-радара на GPU
 
@@ -68,9 +68,9 @@ ref = conj(s_tx),  f_beat = mu·tau = (B/T)·(2R/c)
 ### C++ — OpenCL
 
 ```cpp
-#include <heterodyne/heterodyne_dechirp.hpp>
+#include <dsp/heterodyne/heterodyne_dechirp.hpp>
 
-drv_gpu_lib::HeterodyneDechirp het(backend);
+dsp::heterodyne::HeterodyneDechirp het(backend);
 het.SetParams({.f_start=0, .f_end=2e6f, .sample_rate=12e6f,
                .num_samples=8000, .num_antennas=5});
 
@@ -87,7 +87,7 @@ if (result.success) {
 
 ```cpp
 // Внимание: BackendType::ROCm — строчная m!
-drv_gpu_lib::HeterodyneDechirp het(backend, BackendType::ROCm);
+dsp::heterodyne::HeterodyneDechirp het(backend, BackendType::ROCm);
 het.SetParams({.f_start=0, .f_end=2e6f, .sample_rate=12e6f,
                .num_samples=8000, .num_antennas=5});
 auto result = het.Process(rx_data);

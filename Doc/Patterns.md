@@ -1,4 +1,4 @@
-# Архитектурные паттерны репо `heterodyne`
+﻿# Архитектурные паттерны репо `heterodyne`
 
 > **Источник истины:** `heterodyne/.rag/_RAG.md` (теги `#pattern:Type:Class`, auto-inferred RAG_CLAUDE_C4 от 9.05).
 > Brief'ы — из `key_classes:` того же манифеста (fallback из `rag_dsp.symbols`).
@@ -11,9 +11,9 @@
 > Тонкий публичный API над набором операций. Стабильный → Python-биндинги не ломаются.
 
 
-- **`drv_gpu_lib::HeterodyneDechirp`** — `heterodyne/include/heterodyne/heterodyne_dechirp.hpp:42`
+- **`dsp::heterodyne::HeterodyneDechirp`** — `heterodyne/include/heterodyne/heterodyne_dechirp.hpp:42`
   - Facade репо `heterodyne`: LFM dechirp (mix принятого сигнала с комплексно-сопряжённым chirp-эталоном). Pipeline: NCO → MixDown → LPF. Используется для сжатия LFM-импульса в PD-радаре. Стабильный публичный API → Python-биндинги не ломаются.
-- **`drv_gpu_lib::HeterodyneProcessorROCm`** — `heterodyne/include/heterodyne/processors/heterodyne_processor_rocm.hpp:41`
+- **`dsp::heterodyne::HeterodyneProcessorROCm`** — `heterodyne/include/heterodyne/processors/heterodyne_processor_rocm.hpp:41`
   - Реализация IHeterodyneProcessor: запускает HIP-ядра dechirp_multiply (s_dc = conj(s_rx · s_ref)) и dechirp_correct (сдвиг f_beat → DC) через hiprtc-скомпилированный модуль. Управляет кэшем GPU-буферов (rx, ref, dc, corr, freq) с re-allocati
 
 ## Pipeline
@@ -21,9 +21,9 @@
 > Композиция операций в цепочку. Конфиг → Pipeline объект.
 
 
-- **`drv_gpu_lib::HeterodyneProcessorROCm`** — `heterodyne/include/heterodyne/processors/heterodyne_processor_rocm.hpp:41`
+- **`dsp::heterodyne::HeterodyneProcessorROCm`** — `heterodyne/include/heterodyne/processors/heterodyne_processor_rocm.hpp:41`
   - Реализация IHeterodyneProcessor: запускает HIP-ядра dechirp_multiply (s_dc = conj(s_rx · s_ref)) и dechirp_correct (сдвиг f_beat → DC) через hiprtc-скомпилированный модуль. Управляет кэшем GPU-буферов (rx, ref, dc, corr, freq) с re-allocati
-- **`drv_gpu_lib::IHeterodyneProcessor`** — `heterodyne/include/heterodyne/i_heterodyne_processor.hpp:18`
+- **`dsp::heterodyne::IHeterodyneProcessor`** — `heterodyne/include/heterodyne/i_heterodyne_processor.hpp:18`
   - Pure-virtual интерфейс для GPU-реализаций dechirp-операций: Dechirp (s_dc = s_rx · conj(s_tx)), Correct (сдвиг f_beat → DC), DechirpFromGPU (внешний GPU-буфер), DechirpWithGPURef (оба входа уже на GPU). Реализуется HeterodyneProcessorROCm (
 
 ## Strategy
@@ -31,7 +31,7 @@
 > Семейство взаимозаменяемых алгоритмов за общим интерфейсом (`IPipelineStep`).
 
 
-- **`drv_gpu_lib::IHeterodyneProcessor`** — `heterodyne/include/heterodyne/i_heterodyne_processor.hpp:18`
+- **`dsp::heterodyne::IHeterodyneProcessor`** — `heterodyne/include/heterodyne/i_heterodyne_processor.hpp:18`
   - Pure-virtual интерфейс для GPU-реализаций dechirp-операций: Dechirp (s_dc = s_rx · conj(s_tx)), Correct (сдвиг f_beat → DC), DechirpFromGPU (внешний GPU-буфер), DechirpWithGPURef (оба входа уже на GPU). Реализуется HeterodyneProcessorROCm (
 
 

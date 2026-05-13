@@ -1,4 +1,4 @@
----
+﻿---
 schema_version: 1
 repo: heterodyne
 version: 0.1.0
@@ -14,24 +14,24 @@ modules:
     - TODO
 
 key_classes:                            # auto: top по test_params
-  - fqn: drv_gpu_lib::HeterodyneProcessorROCm
+  - fqn: dsp::heterodyne::HeterodyneProcessorROCm
     brief: "TODO: AI-fill"
     maturity: alpha
     methods: 24
     test_params_rows: 16
-    test_params: test_params/drv_gpu_lib_HeterodyneProcessorROCm.md
-  - fqn: drv_gpu_lib::HeterodyneResult
+    test_params: test_params/dsp_heterodyne_HeterodyneProcessorROCm.md
+  - fqn: dsp::heterodyne::HeterodyneResult
     brief: "** Overall dechirp result */"
     maturity: alpha
     methods: 1
     test_params_rows: 4
-    test_params: test_params/drv_gpu_lib_HeterodyneResult.md
-  - fqn: drv_gpu_lib::HeterodyneDechirp
+    test_params: test_params/dsp_heterodyne_HeterodyneResult.md
+  - fqn: dsp::heterodyne::HeterodyneDechirp
     brief: "@ingroup grp_heterodyne"
     maturity: alpha
     methods: 8
     test_params_rows: 3
-    test_params: test_params/drv_gpu_lib_HeterodyneDechirp.md
+    test_params: test_params/dsp_heterodyne_HeterodyneDechirp.md
   - fqn: PyHeterodyneDechirp
     brief: "TODO: AI-fill"
     maturity: alpha
@@ -44,12 +44,12 @@ key_classes:                            # auto: top по test_params
     methods: 5
     test_params_rows: 0
     test_params: test_params/PyHeterodyneROCm.md
-  - fqn: drv_gpu_lib::HeterodyneParams
+  - fqn: dsp::heterodyne::HeterodyneParams
     brief: "** LFM parameters for dechirp */"
     maturity: alpha
     methods: 4
     test_params_rows: 0
-    test_params: test_params/drv_gpu_lib_HeterodyneParams.md
+    test_params: test_params/dsp_heterodyne_HeterodyneParams.md
   - fqn: test_heterodyne_rocm::HeterodyneCorrectBenchmarkROCm
     brief: "TODO: AI-fill"
     maturity: alpha
@@ -62,18 +62,18 @@ key_classes:                            # auto: top по test_params
     methods: 3
     test_params_rows: 0
     test_params: test_params/test_heterodyne_rocm_HeterodyneDechirpBenchmarkROCm.md
-  - fqn: drv_gpu_lib::IHeterodyneProcessor
+  - fqn: dsp::heterodyne::IHeterodyneProcessor
     brief: "TODO: AI-fill"
     maturity: alpha
     methods: 2
     test_params_rows: 0
-    test_params: test_params/drv_gpu_lib_IHeterodyneProcessor.md
+    test_params: test_params/dsp_heterodyne_IHeterodyneProcessor.md
   - fqn: drv_gpu_lib::IBackend
     brief: "TODO: AI-fill"
     maturity: alpha
     methods: 1
     test_params_rows: 0
-    test_params: test_params/drv_gpu_lib_IBackend.md
+    test_params: test_params/dsp_heterodyne_IBackend.md
 
 test_params_summary:
   classes_with_params: 3

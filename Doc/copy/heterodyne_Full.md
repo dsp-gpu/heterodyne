@@ -1,4 +1,4 @@
-# Heterodyne — Полная документация
+﻿# Heterodyne — Полная документация
 
 > Stretch-processing (дечирп) ЛЧМ-радара на GPU
 
@@ -388,10 +388,10 @@ block   = (256, 1, 1)
 #include "heterodyne_dechirp.hpp"
 
 // OpenCL (по умолчанию)
-drv_gpu_lib::HeterodyneDechirp het(backend);
+dsp::heterodyne::HeterodyneDechirp het(backend);
 
 // ROCm (ENABLE_ROCM=1, Linux + AMD GPU)
-drv_gpu_lib::HeterodyneDechirp het_rocm(backend, BackendType::ROCm);
+dsp::heterodyne::HeterodyneDechirp het_rocm(backend, BackendType::ROCm);
 
 // Параметры (реальные тестовые значения)
 het.SetParams({

@@ -24,13 +24,13 @@ add_library(DspHeterodyne::DspHeterodyne ALIAS DspHeterodyne)
 set_target_properties(DspHeterodyne PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
 target_sources(DspHeterodyne PRIVATE
-  src/heterodyne/src/heterodyne_dechirp.cpp
-  src/heterodyne/src/heterodyne_processor_rocm.cpp
+  src/heterodyne/heterodyne_dechirp.cpp
+  src/heterodyne/heterodyne_processor_rocm.cpp
 )
 
 target_include_directories(DspHeterodyne
   PUBLIC
-    # Стандарт AMD: #include <heterodyne/processors/...>
+    # Стандарт DSP-GPU: #include <dsp/heterodyne/processors/...>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/generated>
     $<INSTALL_INTERFACE:include>
