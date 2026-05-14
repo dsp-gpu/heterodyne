@@ -1,49 +1,35 @@
-﻿---
+---
 schema_version: 1
 kind: use_case
 id: heterodyne_benchmark_rocm
 repo: heterodyne
-title: "Как выполнить бенчмарк гетеродина на GPU"
+title: "Heterodyne Benchmark Rocm"
 synonyms:
   ru:
-    - "тест производительности гетеродина"
-    - "оценка скорости обработки сигналов"
-    - "benchmark гетеродинного преобразования"
-    - "тестирование ROCm для радиолокации"
-    - "анализ антенн на GPU"
-    - "обработка сигналов в батчах"
-    - "benchmark для массива антенн"
-    - "производительность гетеродина на ROCm"
+    - []
   en:
-    - "heterodyne benchmark"
-    - "fft for antenna array"
-    - "signal processing benchmark"
-    - "rocmlib gpu testing"
-    - "batch processing benchmark"
-    - "antenna array performance"
-    - "real-time signal analysis"
-    - "gpu acceleration benchmark"
+    - []
 primary_class: (unknown)
 primary_method: (unknown)
 related_classes:
 related_use_cases:
-  - spectrum__lch_farrow_rocm__usecase__v1
-  - spectrum__lch_farrow_benchmark_rocm__usecase__v1
   - heterodyne__heterodyne_basic__usecase__v1
+  - stats__statistics_rocm__usecase__v1
+  - spectrum__filters_benchmark_rocm__usecase__v1
 maturity: stable
 language: cpp
-tags: [heterodyne, rocm, fft, batch, antenna_array, signal_processing, benchmark, gpu_computing, dsp, rocmlib]
-ai_generated: true
+tags: []
+ai_generated: false
 human_verified: false
-operator: ai
-updated_at: 2026-05-06
+operator: alex
+updated_at: 2026-05-13
 ---
 
-# Use-case: Как выполнить бенчмарк гетеродина на GPU
+# Use-case: Heterodyne Benchmark Rocm
 
 ## Когда применять
 
-Когда нужно протестировать производительность гетеродинного преобразования на ROCm с использованием массива антенн и обработкой сигналов в реальном времени
+_LLM-fallback: см. описание класса._
 
 ## Решение
 
@@ -67,7 +53,7 @@ updated_at: 2026-05-06
     backend->Initialize(0);
 
     // ── Параметры гетеродина ──────────────────────────────────────────────
-    dsp::heterodyne::HeterodyneParams params;
+    ::dsp::heterodyne::HeterodyneParams params;
     params.num_antennas = 5;
     params.num_samples  = 4000;
     params.sample_rate  = 12e6f;
@@ -89,10 +75,10 @@ _Не определены (нет `@throws` в Doxygen primary_method)._
 
 ## Что делать дальше
 
-- См. [spectrum__lch_farrow_rocm__usecase__v1](./lch_farrow_rocm.md)
-- См. [spectrum__lch_farrow_benchmark_rocm__usecase__v1](./lch_farrow_benchmark_rocm.md)
 - См. [heterodyne__heterodyne_basic__usecase__v1](./heterodyne_basic.md)
+- См. [stats__statistics_rocm__usecase__v1](./statistics_rocm.md)
+- См. [spectrum__filters_benchmark_rocm__usecase__v1](./filters_benchmark_rocm.md)
 
 ## Ссылки
 
-- Источник кода: `E:/DSP-GPU/heterodyne/tests/test_heterodyne_benchmark_rocm.hpp:1`
+- Источник кода: `/home/alex/DSP-GPU/heterodyne/tests/test_heterodyne_benchmark_rocm.hpp:1`

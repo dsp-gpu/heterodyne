@@ -3,47 +3,38 @@ schema_version: 1
 kind: use_case
 id: heterodyne_rocm
 repo: heterodyne
-title: "Как выполнить гетеродинную обработку сигналов на GPU с ROCm"
+title: "Heterodyne Rocm"
 synonyms:
   ru:
-    - "гетеродинная обработка сигналов на GPU"
-    - "обработка сигналов с антеннами на ROCm"
-    - "вычисления гетеродина на GPU"
-    - "обработка радиолокационных сигналов с ROCm"
-    - "параллельная гетеродинная обработка"
-    - "вычисления БПФ для антенн"
-    - "оптимизация обработки сигналов на GPU"
-    - "высокопроизводительная гетеродинная обработка"
+    - []
   en:
-    - "heterodyne signal processing on GPU"
-    - "antenna array signal processing with ROCm"
-    - "GPU-based heterodyne computation"
-    - "radar signal processing with ROCm"
-    - "parallel heterodyne processing"
-    - "FFT for antenna arrays"
-    - "high-performance heterodyne processing"
-    - "GPU optimized signal processing"
+    - []
 primary_class: PyHeterodyneROCm
 primary_method: PyHeterodyneROCm
 related_classes:
+  - strategies::all_maxima_pipeline_rocm
+  - heterodyne::heterodyne_processor_rocm
+  - linalg::capon_processor
+  - stats::statistics_processor
+  - spectrum::spectrum_processor_rocm
 related_use_cases:
-  - heterodyne__heterodyne_basic__usecase__v1
   - heterodyne__heterodyne_benchmark_rocm__usecase__v1
   - heterodyne__heterodyne_pipeline__usecase__v1
+  - heterodyne__heterodyne_basic__usecase__v1
 maturity: stable
 language: cpp
-tags: [heterodyne, rocm, gpu, signal_processing, antenna_array, fft, radar, pybind11, dsp, parallel_processing]
-ai_generated: true
+tags: []
+ai_generated: false
 human_verified: false
-operator: ai
-updated_at: 2026-05-06
+operator: alex
+updated_at: 2026-05-13
 ---
 
-# Use-case: Как выполнить гетеродинную обработку сигналов на GPU с ROCm
+# Use-case: Heterodyne Rocm
 
 ## Когда применять
 
-Когда требуется обработка сигналов с несколькими антеннами на GPU с использованием ROCm для повышения производительности
+_LLM-fallback: см. описание класса._
 
 ## Решение
 
@@ -89,10 +80,10 @@ _Не определены (нет `@throws` в Doxygen primary_method)._
 
 ## Что делать дальше
 
-- См. [heterodyne__heterodyne_basic__usecase__v1](./heterodyne_basic.md)
 - См. [heterodyne__heterodyne_benchmark_rocm__usecase__v1](./heterodyne_benchmark_rocm.md)
 - См. [heterodyne__heterodyne_pipeline__usecase__v1](./heterodyne_pipeline.md)
+- См. [heterodyne__heterodyne_basic__usecase__v1](./heterodyne_basic.md)
 
 ## Ссылки
 
-- Источник кода: `E:/DSP-GPU/heterodyne/tests/test_heterodyne_rocm.hpp:1`
+- Источник кода: `/home/alex/DSP-GPU/heterodyne/tests/test_heterodyne_rocm.hpp:1`

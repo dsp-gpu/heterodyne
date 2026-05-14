@@ -37,8 +37,8 @@ target_link_libraries(DspHeterodyne PUBLIC
 
 ```cmake
 target_sources(DspHeterodyne PRIVATE
-  src/heterodyne/src/heterodyne_dechirp.cpp
-  src/heterodyne/src/heterodyne_processor_rocm.cpp
+  src/heterodyne/heterodyne_dechirp.cpp
+  src/heterodyne/heterodyne_processor_rocm.cpp
 )
 ```
 
@@ -51,8 +51,8 @@ fetch_dsp_signal_generators()
 fetch_dsp_spectrum()
 find_package(hip    REQUIRED)
 find_package(hipfft REQUIRED)
-src/heterodyne/src/heterodyne_dechirp.cpp
-src/heterodyne/src/heterodyne_processor_rocm.cpp
+src/heterodyne/heterodyne_dechirp.cpp
+src/heterodyne/heterodyne_processor_rocm.cpp
 target_link_libraries(<TARGET>
 ```
 

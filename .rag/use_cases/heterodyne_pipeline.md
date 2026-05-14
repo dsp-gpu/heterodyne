@@ -3,47 +3,33 @@ schema_version: 1
 kind: use_case
 id: heterodyne_pipeline
 repo: heterodyne
-title: "Обработка сигналов гетеродинного приемника на GPU"
+title: "Heterodyne Pipeline"
 synonyms:
   ru:
-    - "Обработка сигналов гетеродинного приемника"
-    - "Гетеродинный сигнал на GPU"
-    - "Пайплайн обработки сигналов"
-    - "Обработка сигналов с преобразованием Фурье"
-    - "Многоэтапная обработка сигналов"
-    - "Смешивание и фильтрация сигналов"
-    - "Обработка сигналов с ROCm"
-    - "Гетеродинный приемник на GPU"
+    - []
   en:
-    - "Heterodyne signal processing"
-    - "GPU-based heterodyne pipeline"
-    - "Signal processing pipeline for antenna arrays"
-    - "FFT-based signal processing"
-    - "Multi-stage signal processing"
-    - "Mixing and filtering signals"
-    - "Heterodyne receiver processing"
-    - "Batch signal processing with ROCm"
+    - []
 primary_class: (unknown)
 primary_method: (unknown)
 related_classes:
 related_use_cases:
   - heterodyne__heterodyne_basic__usecase__v1
   - heterodyne__heterodyne_benchmark_rocm__usecase__v1
-  - core__profiling_facade__usecase__v1
+  - core__compile_key__usecase__v1
 maturity: stable
 language: cpp
-tags: [heterodyne, rocm, signal_processing, gpu, pipeline, fft, antenna_array, batch_processing, dsp, heterodyne_pipeline]
-ai_generated: true
+tags: []
+ai_generated: false
 human_verified: false
-operator: ai
-updated_at: 2026-05-06
+operator: alex
+updated_at: 2026-05-13
 ---
 
-# Use-case: Обработка сигналов гетеродинного приемника на GPU
+# Use-case: Heterodyne Pipeline
 
 ## Когда применять
 
-Когда требуется обработка сигналов гетеродинного приемника с несколькими этапами обработки на GPU
+_LLM-fallback: см. описание класса._
 
 ## Решение
 
@@ -59,8 +45,8 @@ _Не определены (нет `@throws` в Doxygen primary_method)._
 
 - См. [heterodyne__heterodyne_basic__usecase__v1](./heterodyne_basic.md)
 - См. [heterodyne__heterodyne_benchmark_rocm__usecase__v1](./heterodyne_benchmark_rocm.md)
-- См. [core__profiling_facade__usecase__v1](./profiling_facade.md)
+- См. [core__compile_key__usecase__v1](./compile_key.md)
 
 ## Ссылки
 
-- Источник кода: `E:/DSP-GPU/heterodyne/tests/test_heterodyne_pipeline.hpp:1`
+- Источник кода: `/home/alex/DSP-GPU/heterodyne/tests/test_heterodyne_pipeline.hpp:1`
