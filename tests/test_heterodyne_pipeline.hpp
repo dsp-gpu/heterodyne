@@ -7,7 +7,7 @@
 //         process_external (ProcessExternal() с внешним HIP-буфером).
 // ЗАЧЕМ:  Тестирует facade-уровень — как используется в radar pipeline.
 //         Ошибки statefulness/ownership HIP-буферов невидимы без этих тестов.
-// ПОЧЕМУ: ENABLE_ROCM. External-buffer тест проверяет owns_resources_=false.
+// ПОЧЕМУ: External-buffer тест проверяет owns_resources_=false.
 //
 // История: Создан: 2026-04-12
 // ============================================================================

@@ -7,7 +7,7 @@
 //         full_pipeline, dechirp_from_gpu (external HIP buffer), random_delays.
 // ЗАЧЕМ:  Покрывает низкоуровневый ROCm-класс — изолирует GPU kernel
 //         от бизнес-логики facade. Падение здесь = ошибка в HIP kernel.
-// ПОЧЕМУ: ENABLE_ROCM. Эталон — GPU vs CPU. External buffer тест.
+// ПОЧЕМУ: Эталон — GPU vs CPU. External buffer тест.
 //
 // История: Создан: 2026-04-12
 // ============================================================================

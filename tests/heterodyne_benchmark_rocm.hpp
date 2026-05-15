@@ -8,7 +8,7 @@
 //         Замеряют этапы: Upload_Rx, Upload_Ref, Kernel_Multiply, Download.
 // ЗАЧЕМ:  Позволяет изолированно измерить производительность Dechirp/Correct
 //         на реальном GPU без overhead тестовой инфраструктуры.
-// ПОЧЕМУ: Компилируется только при ENABLE_ROCM=1. Результаты → ProfilingFacade.
+// ПОЧЕМУ: ROCm-only. Результаты → ProfilingFacade.
 //
 // История: Создан: 2026-04-12
 // ============================================================================
@@ -20,7 +20,7 @@
  * HeterodyneDechirpBenchmarkROCm → Dechirp():  Upload_Rx, Upload_Ref, Kernel_Multiply, Download
  * HeterodyneCorrectBenchmarkROCm → Correct():  Upload_DC, Upload_PhaseStep, Kernel_Correct, Download
  *
- * Компилируется только при ENABLE_ROCM=1 (Linux + AMD GPU).
+ * ROCm-only. (Linux + AMD GPU).
  * На Windows без AMD GPU: compile-only, не выполняется.
  *
  * Использование:

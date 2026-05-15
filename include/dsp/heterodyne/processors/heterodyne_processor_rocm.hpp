@@ -72,7 +72,6 @@ using HeterodyneROCmProfEvents =
  * @brief ROCm/HIP реализация IHeterodyneProcessor: dechirp_multiply + dechirp_correct.
  *
  * @note Move разрешён, copy запрещён — owns hipModule + GPU-буферы.
- * @note Требует #if ENABLE_ROCM. На non-ROCm сборках — stub с runtime_error.
  * @note Не thread-safe. Один экземпляр = один владелец GPU-кэша и hipModule.
  * @note OPT-1/2: kernel'ы скомпилированы один раз, GPU-буферы кэшируются
  *       по размерам (cached_total_, cached_samples_, cached_antennas_).
