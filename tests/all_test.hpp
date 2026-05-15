@@ -25,9 +25,7 @@
 #include "test_heterodyne_basic.hpp"
 #include "test_heterodyne_pipeline.hpp"
 #include "test_heterodyne_rocm.hpp"
-#if ENABLE_ROCM
 #include "test_heterodyne_benchmark_rocm.hpp"
-#endif
 
 namespace heterodyne_all_test {
 
@@ -42,9 +40,7 @@ inline void run() {
   test_heterodyne_rocm::run();
 
   // Benchmark (uncomment when needed)
-#if ENABLE_ROCM
   //  test_heterodyne_benchmark_rocm::run();
-#endif
 }
 
 }  // namespace heterodyne_all_test

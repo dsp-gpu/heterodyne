@@ -36,7 +36,6 @@
  * @see GpuBenchmarkBase, MemoryBank/tasks/TASK_heterodyne_profiling.md
  */
 
-#if ENABLE_ROCM
 
 #include <dsp/heterodyne/processors/heterodyne_processor_rocm.hpp>
 #include <core/services/gpu_benchmark_base.hpp>
@@ -126,4 +125,3 @@ private:
 
 }  // namespace test_heterodyne_rocm
 
-#endif  // ENABLE_ROCM

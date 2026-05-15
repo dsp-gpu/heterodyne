@@ -37,7 +37,6 @@ using namespace ::dsp::heterodyne;
 using namespace ::drv_gpu_lib;
 #include <dsp/heterodyne/heterodyne_params.hpp>
 
-#if ENABLE_ROCM
 
 #include <core/backends/rocm/rocm_backend.hpp>
 
@@ -161,13 +160,3 @@ inline void run_test_random_delays()     { /* now in run_basic_tests */ }
 
 }} // namespace heterodyne::tests
 
-#else  // !ENABLE_ROCM
-
-namespace heterodyne { namespace tests {
-inline void run_basic_tests()            {}
-inline void run_test_single_antenna()    {}
-inline void run_test_5_antennas_linear() {}
-inline void run_test_random_delays()     {}
-}} // namespace heterodyne::tests
-
-#endif  // ENABLE_ROCM

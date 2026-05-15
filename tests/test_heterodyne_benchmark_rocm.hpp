@@ -32,7 +32,6 @@
  * @see heterodyne_benchmark_rocm.hpp, MemoryBank/tasks/TASK_heterodyne_profiling.md
  */
 
-#if ENABLE_ROCM
 
 #include "heterodyne_benchmark_rocm.hpp"
 #include <core/backends/rocm/rocm_backend.hpp>
@@ -119,4 +118,3 @@ inline int run() {
 
 }  // namespace test_heterodyne_benchmark_rocm
 
-#endif  // ENABLE_ROCM

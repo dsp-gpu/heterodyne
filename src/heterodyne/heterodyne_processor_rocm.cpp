@@ -26,7 +26,6 @@
  * @date 2026-02-23
  */
 
-#if ENABLE_ROCM
 
 #include <dsp/heterodyne/processors/heterodyne_processor_rocm.hpp>
 #include <dsp/heterodyne/kernels/heterodyne_kernels_rocm.hpp>
@@ -593,10 +592,3 @@ void HeterodyneProcessorROCm::ReleaseGpuResources() {
 
 } // namespace dsp::heterodyne
 
-#else  // !ENABLE_ROCM
-
-// ════════════════════════════════════════════════════════════════════════════
-// Stub — all methods are inline in the header (nothing to compile here)
-// ════════════════════════════════════════════════════════════════════════════
-
-#endif  // ENABLE_ROCM

@@ -25,7 +25,6 @@
  *   - Изменён: 2026-05-01 (унификация формата шапки под dsp-asst RAG-индексер)
  */
 
-#if ENABLE_ROCM
 
 using namespace ::drv_gpu_lib;
 
@@ -129,4 +128,3 @@ __global__ void dechirp_correct(
 }  // namespace kernels
 } // namespace dsp::heterodyne
 
-#endif  // ENABLE_ROCM

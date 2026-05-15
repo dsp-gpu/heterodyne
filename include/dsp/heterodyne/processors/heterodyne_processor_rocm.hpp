@@ -49,7 +49,6 @@
 //   - Изменён: 2026-05-01 (унификация формата шапки под dsp-asst RAG-индексер)
 // ============================================================================
 
-#if ENABLE_ROCM
 
 #include "../i_heterodyne_processor.hpp"
 #include <core/interface/i_backend.hpp>
@@ -278,94 +277,3 @@ private:
 
 } // namespace dsp::heterodyne
 
-#else  // !ENABLE_ROCM
-
-// ═══════════════════════════════════════════════════════════════════════════
-// Stub for non-ROCm builds (Windows)
-// ═══════════════════════════════════════════════════════════════════════════
-
-#include "../i_heterodyne_processor.hpp"
-#include <core/interface/i_backend.hpp>
-#include <stdexcept>
-
-using namespace ::drv_gpu_lib;
-
-namespace dsp::heterodyne {
-
-class HeterodyneProcessorROCm : public IHeterodyneProcessor {
-public:
-  explicit HeterodyneProcessorROCm(IBackend* /*backend*/) {}
-  ~HeterodyneProcessorROCm() = default;
-
-  /**
-   * @brief Stub: бросает runtime_error — Dechirp доступен только в ROCm-сборке.
-   *
-   *
-   * @return Никогда не возвращает (всегда throw).
-   *   @test_check throws std::runtime_error
-   *
-   * @throws std::runtime_error всегда: "ROCm not enabled".
-   *   @test_check throws std::runtime_error
-   */
-  std::vector<std::complex<float>> Dechirp(
-      const std::vector<std::complex<float>>& /*rx_data*/,
-      const std::vector<std::complex<float>>& /*ref_data*/,
-      const HeterodyneParams& /*params*/) override {
-    throw std::runtime_error("HeterodyneProcessorROCm::Dechirp: ROCm not enabled");
-  }
-
-  /**
-   * @brief Stub: бросает runtime_error — Correct доступен только в ROCm-сборке.
-   *
-   *
-   * @return Никогда не возвращает (всегда throw).
-   *   @test_check throws std::runtime_error
-   *
-   * @throws std::runtime_error всегда: "ROCm not enabled".
-   *   @test_check throws std::runtime_error
-   */
-  std::vector<std::complex<float>> Correct(
-      const std::vector<std::complex<float>>& /*dc_data*/,
-      const std::vector<float>& /*f_beat_hz*/,
-      const HeterodyneParams& /*params*/) override {
-    throw std::runtime_error("HeterodyneProcessorROCm::Correct: ROCm not enabled");
-  }
-
-  /**
-   * @brief Stub: бросает runtime_error — DechirpFromGPU доступен только в ROCm-сборке.
-   *
-   *
-   * @return Никогда не возвращает (всегда throw).
-   *   @test_check throws std::runtime_error
-   *
-   * @throws std::runtime_error всегда: "ROCm not enabled".
-   *   @test_check throws std::runtime_error
-   */
-  std::vector<std::complex<float>> DechirpFromGPU(
-      void* /*rx_gpu_ptr*/,
-      const std::vector<std::complex<float>>& /*ref_data*/,
-      const HeterodyneParams& /*params*/) override {
-    throw std::runtime_error("HeterodyneProcessorROCm::DechirpFromGPU: ROCm not enabled");
-  }
-
-  /**
-   * @brief Stub: бросает runtime_error — DechirpWithGPURef доступен только в ROCm-сборке.
-   *
-   *
-   * @return Никогда не возвращает (всегда throw).
-   *   @test_check throws std::runtime_error
-   *
-   * @throws std::runtime_error всегда: "ROCm not enabled".
-   *   @test_check throws std::runtime_error
-   */
-  std::vector<std::complex<float>> DechirpWithGPURef(
-      void* /*rx_gpu_ptr*/,
-      void* /*ref_gpu_ptr*/,
-      const HeterodyneParams& /*params*/) override {
-    throw std::runtime_error("HeterodyneProcessorROCm::DechirpWithGPURef: ROCm not enabled");
-  }
-};
-
-} // namespace dsp::heterodyne
-
-#endif  // ENABLE_ROCM

@@ -36,7 +36,6 @@
 #include <string>
 #include <random>
 
-#if ENABLE_ROCM
 #include <dsp/heterodyne/processors/heterodyne_processor_rocm.hpp>
 #include <dsp/heterodyne/heterodyne_dechirp.hpp>
 #include <dsp/heterodyne/heterodyne_params.hpp>
@@ -45,11 +44,9 @@
 #include "test_utils/test_utils.hpp"
 
 #include <hip/hip_runtime.h>
-#endif
 
 namespace test_heterodyne_rocm {
 
-#if ENABLE_ROCM
 
 using namespace drv_gpu_lib;
 using namespace gpu_test_utils;
@@ -241,10 +238,5 @@ inline void run() {
   runner.print_summary();
 }
 
-#else
-
-inline void run() {}
-
-#endif
 
 }  // namespace test_heterodyne_rocm

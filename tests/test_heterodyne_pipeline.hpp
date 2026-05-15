@@ -32,7 +32,6 @@ using namespace ::dsp::heterodyne;
 using namespace ::drv_gpu_lib;
 #include <dsp/heterodyne/heterodyne_params.hpp>
 
-#if ENABLE_ROCM
 
 #include <core/backends/rocm/rocm_backend.hpp>
 
@@ -142,12 +141,3 @@ inline void run_test_process_external() { /* now in run_pipeline_tests */ }
 
 }} // namespace heterodyne::tests
 
-#else  // !ENABLE_ROCM
-
-namespace heterodyne { namespace tests {
-inline void run_pipeline_tests()         {}
-inline void run_test_full_pipeline()     {}
-inline void run_test_process_external()  {}
-}} // namespace heterodyne::tests
-
-#endif  // ENABLE_ROCM

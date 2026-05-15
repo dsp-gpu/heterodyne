@@ -166,7 +166,6 @@ HeterodyneResult HeterodyneDechirp::BuildResult(
   HeterodyneResult result;
   std::vector<::antenna_fft::SpectrumResult> spec_results;
 
-#if ENABLE_ROCM
   if (compute_backend_ == BackendType::ROCm) {
     ::antenna_fft::SpectrumParams spec_params;
     spec_params.antenna_count = static_cast<uint32_t>(params.num_antennas);
@@ -182,7 +181,6 @@ HeterodyneResult HeterodyneDechirp::BuildResult(
     processor->Initialize(spec_params);
     spec_results = processor->ProcessFromCPU(dc_data);
   } else
-#endif
   {
     throw std::runtime_error(
         "HeterodyneDechirp::BuildResult: non-ROCm backend not supported "
